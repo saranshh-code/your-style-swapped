@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
+import { Link } from "react-router-dom";
 import hoodieImage from "@/assets/hoodie-hero.png";
 
 const HeroSection = () => {
@@ -32,12 +33,16 @@ const HeroSection = () => {
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Button variant="hero" size="xl">
-                Design Now
-                <ArrowRight className="w-5 h-5" />
+              <Button variant="hero" size="xl" asChild>
+                <Link to="/design">
+                  Design Now
+                  <ArrowRight className="w-5 h-5" />
+                </Link>
               </Button>
-              <Button variant="heroOutline" size="xl">
-                See How It Works
+              <Button variant="heroOutline" size="xl" asChild>
+                <a href="#how-it-works">
+                  See How It Works
+                </a>
               </Button>
             </div>
 

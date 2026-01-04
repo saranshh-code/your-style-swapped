@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -29,9 +30,9 @@ const Navbar = () => {
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <a href="#" className="font-display text-3xl tracking-wider text-foreground">
+          <Link to="/" className="font-display text-3xl tracking-wider text-foreground">
             SWAPS
-          </a>
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-8">
@@ -48,8 +49,8 @@ const Navbar = () => {
 
           {/* CTA Button */}
           <div className="hidden md:block">
-            <Button variant="hero" size="lg">
-              Start Creating
+            <Button variant="hero" size="lg" asChild>
+              <Link to="/design">Start Creating</Link>
             </Button>
           </div>
 
@@ -76,8 +77,8 @@ const Navbar = () => {
                   {link.label}
                 </a>
               ))}
-              <Button variant="hero" size="lg" className="mt-4">
-                Start Creating
+              <Button variant="hero" size="lg" className="mt-4" asChild>
+                <Link to="/design">Start Creating</Link>
               </Button>
             </div>
           </div>
