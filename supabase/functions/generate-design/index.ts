@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { prompt, productType, referenceImage } = await req.json();
+    const { prompt, productType, fabricType, color, referenceImage } = await req.json();
     
     if (!prompt) {
       return new Response(
@@ -32,16 +32,32 @@ serve(async (req) => {
 
     // Create a detailed prompt for clothing design
     const productContext = productType || 'hoodie';
+    const fabricContext = fabricType || 'cotton';
+    const colorContext = color || 'black';
+    
+    // Map fabric types to descriptive textures
+    const fabricDescriptions: Record<string, string> = {
+      cotton: 'soft cotton fabric with natural texture',
+      polyester: 'smooth polyester fabric with slight sheen',
+      nylon: 'lightweight nylon fabric with sleek finish',
+      wool: 'warm woolen fabric with cozy texture',
+      fleece: 'plush fleece fabric with soft fuzzy texture',
+      linen: 'natural linen fabric with elegant drape'
+    };
+    
+    const fabricDesc = fabricDescriptions[fabricContext] || 'premium fabric';
     
     let enhancedPrompt: string;
     if (referenceImage) {
-      enhancedPrompt = `Create a professional product mockup of a ${productContext} incorporating the uploaded image/logo into the design. 
+      enhancedPrompt = `Create a professional product mockup of a ${colorContext} colored ${productContext} made from ${fabricDesc}, incorporating the uploaded image/logo into the design. 
       Additional instructions: ${prompt}. 
       The mockup should be photorealistic, studio lighting, floating on a dark background, premium quality apparel photography. 
+      The fabric texture should be clearly visible showing the ${fabricContext} material. The garment color must be ${colorContext}.
       Show the garment from the front view with the design/logo clearly visible on the chest area.`;
     } else {
-      enhancedPrompt = `Create a professional product mockup of a ${productContext} with this design: ${prompt}. 
+      enhancedPrompt = `Create a professional product mockup of a ${colorContext} colored ${productContext} made from ${fabricDesc} with this design: ${prompt}. 
       The mockup should be photorealistic, studio lighting, floating on a dark background, premium quality apparel photography. 
+      The fabric texture should be clearly visible showing the ${fabricContext} material. The garment color must be ${colorContext}.
       Show the garment from the front view with the design clearly visible.`;
     }
 

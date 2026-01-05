@@ -1,12 +1,13 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Sparkles, Loader2, Download, RefreshCw, Upload, X, Image } from "lucide-react";
+import { ArrowLeft, Sparkles, Loader2, Download, RefreshCw, Upload, X, Palette } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
 type ProductType = "hoodie" | "tshirt" | "crewneck";
+type FabricType = "cotton" | "polyester" | "nylon" | "wool" | "fleece" | "linen";
 
 const productOptions: { value: ProductType; label: string }[] = [
   { value: "hoodie", label: "Hoodie" },
@@ -14,9 +15,31 @@ const productOptions: { value: ProductType; label: string }[] = [
   { value: "crewneck", label: "Crewneck" },
 ];
 
+const fabricOptions: { value: FabricType; label: string; description: string }[] = [
+  { value: "cotton", label: "Cotton", description: "Soft & breathable" },
+  { value: "polyester", label: "Polyester", description: "Durable & quick-dry" },
+  { value: "nylon", label: "Nylon", description: "Lightweight & strong" },
+  { value: "wool", label: "Wool", description: "Warm & natural" },
+  { value: "fleece", label: "Fleece", description: "Cozy & insulating" },
+  { value: "linen", label: "Linen", description: "Cool & elegant" },
+];
+
+const colorOptions = [
+  { value: "black", label: "Black", hex: "#1a1a1a" },
+  { value: "white", label: "White", hex: "#ffffff" },
+  { value: "navy", label: "Navy", hex: "#1e3a5f" },
+  { value: "gray", label: "Gray", hex: "#6b7280" },
+  { value: "red", label: "Red", hex: "#dc2626" },
+  { value: "forest", label: "Forest", hex: "#166534" },
+  { value: "burgundy", label: "Burgundy", hex: "#7f1d1d" },
+  { value: "cream", label: "Cream", hex: "#fef3c7" },
+];
+
 const DesignStudio = () => {
   const [prompt, setPrompt] = useState("");
   const [productType, setProductType] = useState<ProductType>("hoodie");
+  const [fabricType, setFabricType] = useState<FabricType>("cotton");
+  const [selectedColor, setSelectedColor] = useState("black");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
@@ -68,7 +91,13 @@ const DesignStudio = () => {
 
     try {
       const { data, error } = await supabase.functions.invoke("generate-design", {
-        body: { prompt, productType, referenceImage: uploadedImage },
+        body: { 
+          prompt, 
+          productType, 
+          fabricType, 
+          color: selectedColor,
+          referenceImage: uploadedImage 
+        },
       });
 
       if (error) {
@@ -156,6 +185,67 @@ const DesignStudio = () => {
                     }`}
                   >
                     {option.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Color Selection */}
+            <div className="space-y-3">
+              <label className="text-sm font-medium text-foreground flex items-center gap-2">
+                <Palette className="w-4 h-4" />
+                Color
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {colorOptions.map((color) => (
+                  <button
+                    key={color.value}
+                    onClick={() => setSelectedColor(color.value)}
+                    className={`group relative w-10 h-10 rounded-full border-2 transition-all duration-300 ${
+                      selectedColor === color.value
+                        ? "border-primary scale-110 shadow-lg"
+                        : "border-transparent hover:scale-105"
+                    }`}
+                    style={{ backgroundColor: color.hex }}
+                    title={color.label}
+                  >
+                    {selectedColor === color.value && (
+                      <span className="absolute inset-0 flex items-center justify-center">
+                        <span className={`w-2 h-2 rounded-full ${
+                          color.value === 'white' || color.value === 'cream' ? 'bg-foreground' : 'bg-white'
+                        }`} />
+                      </span>
+                    )}
+                    <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                      {color.label}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Fabric Selection */}
+            <div className="space-y-3">
+              <label className="text-sm font-medium text-foreground">Fabric</label>
+              <div className="grid grid-cols-3 gap-2">
+                {fabricOptions.map((fabric) => (
+                  <button
+                    key={fabric.value}
+                    onClick={() => setFabricType(fabric.value)}
+                    className={`p-3 rounded-lg border transition-all duration-300 text-left ${
+                      fabricType === fabric.value
+                        ? "border-primary bg-primary/10"
+                        : "border-border bg-card hover:border-primary/50"
+                    }`}
+                  >
+                    <p className={`text-sm font-medium ${
+                      fabricType === fabric.value ? "text-foreground" : "text-muted-foreground"
+                    }`}>
+                      {fabric.label}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      {fabric.description}
+                    </p>
                   </button>
                 ))}
               </div>
