@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, User } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { user, loading } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -47,11 +49,30 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* CTA Button */}
-          <div className="hidden md:block">
-            <Button variant="hero" size="lg" asChild>
-              <Link to="/design">Start Creating</Link>
-            </Button>
+          {/* CTA Buttons */}
+          <div className="hidden md:flex items-center gap-4">
+            {!loading && user ? (
+              <>
+                <Button variant="ghost" size="sm" asChild>
+                  <Link to="/dashboard" className="flex items-center gap-2">
+                    <User className="w-4 h-4" />
+                    Dashboard
+                  </Link>
+                </Button>
+                <Button variant="hero" size="lg" asChild>
+                  <Link to="/design">Start Creating</Link>
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="ghost" size="sm" asChild>
+                  <Link to="/auth">Sign In</Link>
+                </Button>
+                <Button variant="hero" size="lg" asChild>
+                  <Link to="/design">Start Creating</Link>
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -77,6 +98,24 @@ const Navbar = () => {
                   {link.label}
                 </a>
               ))}
+              {!loading && user ? (
+                <Link
+                  to="/dashboard"
+                  className="text-muted-foreground hover:text-foreground transition-colors py-2 flex items-center gap-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <User className="w-4 h-4" />
+                  Dashboard
+                </Link>
+              ) : (
+                <Link
+                  to="/auth"
+                  className="text-muted-foreground hover:text-foreground transition-colors py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Sign In
+                </Link>
+              )}
               <Button variant="hero" size="lg" className="mt-4" asChild>
                 <Link to="/design">Start Creating</Link>
               </Button>

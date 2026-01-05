@@ -14,7 +14,122 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      orders: {
+        Row: {
+          created_at: string
+          design_id: string | null
+          id: string
+          quantity: number
+          shipping_address: string | null
+          size: string | null
+          status: string
+          total_price: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          design_id?: string | null
+          id?: string
+          quantity?: number
+          shipping_address?: string | null
+          size?: string | null
+          status?: string
+          total_price?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          design_id?: string | null
+          id?: string
+          quantity?: number
+          shipping_address?: string | null
+          size?: string | null
+          status?: string
+          total_price?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_design_id_fkey"
+            columns: ["design_id"]
+            isOneToOne: false
+            referencedRelation: "saved_designs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          full_name: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      saved_designs: {
+        Row: {
+          color: string
+          created_at: string
+          fabric_type: string
+          generated_image_url: string
+          id: string
+          name: string
+          product_type: string
+          prompt: string
+          reference_image_url: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          color: string
+          created_at?: string
+          fabric_type: string
+          generated_image_url: string
+          id?: string
+          name?: string
+          product_type: string
+          prompt: string
+          reference_image_url?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          fabric_type?: string
+          generated_image_url?: string
+          id?: string
+          name?: string
+          product_type?: string
+          prompt?: string
+          reference_image_url?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

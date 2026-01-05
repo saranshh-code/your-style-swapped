@@ -1,10 +1,11 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Sparkles, Loader2, Download, RefreshCw, Upload, X, Palette } from "lucide-react";
+import { ArrowLeft, Sparkles, Loader2, Download, RefreshCw, Upload, X, Palette, Save, User } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 type ProductType = "hoodie" | "tshirt" | "crewneck";
 type FabricType = "cotton" | "polyester" | "nylon" | "wool" | "fleece" | "linen";
@@ -41,10 +42,12 @@ const DesignStudio = () => {
   const [fabricType, setFabricType] = useState<FabricType>("cotton");
   const [selectedColor, setSelectedColor] = useState("black");
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { user } = useAuth();
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -125,6 +128,41 @@ const DesignStudio = () => {
     }
   };
 
+  const handleSaveDesign = async () => {
+    if (!user) {
+      toast.error("Please sign in to save your design");
+      return;
+    }
+
+    if (!generatedImage) {
+      toast.error("No design to save");
+      return;
+    }
+
+    setIsSaving(true);
+
+    try {
+      const { error } = await supabase.from("saved_designs").insert({
+        user_id: user.id,
+        name: prompt.slice(0, 50) || "Untitled Design",
+        prompt,
+        product_type: productType,
+        fabric_type: fabricType,
+        color: selectedColor,
+        generated_image_url: generatedImage,
+      });
+
+      if (error) throw error;
+
+      toast.success("Design saved to your dashboard!");
+    } catch (err) {
+      console.error("Error saving design:", err);
+      toast.error("Failed to save design");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const handleDownload = () => {
     if (!generatedImage) return;
     
@@ -150,9 +188,23 @@ const DesignStudio = () => {
             <span className="text-border">|</span>
             <h1 className="font-display text-xl text-foreground">DESIGN STUDIO</h1>
           </div>
-          <Link to="/" className="font-display text-2xl text-foreground">
-            SWAPS
-          </Link>
+          <div className="flex items-center gap-4">
+            <Link to="/" className="font-display text-2xl text-foreground">
+              SWAPS
+            </Link>
+            {user ? (
+              <Link
+                to="/dashboard"
+                className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+              >
+                <User className="w-4 h-4" />
+              </Link>
+            ) : (
+              <Button variant="ghost" size="sm" asChild>
+                <Link to="/auth">Sign In</Link>
+              </Button>
+            )}
+          </div>
         </div>
       </header>
 
@@ -409,6 +461,20 @@ const DesignStudio = () => {
                 >
                   <RefreshCw className="w-4 h-4" />
                   Regenerate
+                </Button>
+                <Button
+                  variant="heroOutline"
+                  size="lg"
+                  className="flex-1"
+                  onClick={handleSaveDesign}
+                  disabled={isSaving || !user}
+                >
+                  {isSaving ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Save className="w-4 h-4" />
+                  )}
+                  {user ? "Save" : "Sign in to Save"}
                 </Button>
                 <Button
                   variant="hero"
