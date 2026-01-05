@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { prompt, productType } = await req.json();
+    const { prompt, productType, referenceImage } = await req.json();
     
     if (!prompt) {
       return new Response(
@@ -32,11 +32,40 @@ serve(async (req) => {
 
     // Create a detailed prompt for clothing design
     const productContext = productType || 'hoodie';
-    const enhancedPrompt = `Create a professional product mockup of a ${productContext} with this design: ${prompt}. 
-    The mockup should be photorealistic, studio lighting, floating on a dark background, premium quality apparel photography. 
-    Show the garment from the front view with the design clearly visible.`;
+    
+    let enhancedPrompt: string;
+    if (referenceImage) {
+      enhancedPrompt = `Create a professional product mockup of a ${productContext} incorporating the uploaded image/logo into the design. 
+      Additional instructions: ${prompt}. 
+      The mockup should be photorealistic, studio lighting, floating on a dark background, premium quality apparel photography. 
+      Show the garment from the front view with the design/logo clearly visible on the chest area.`;
+    } else {
+      enhancedPrompt = `Create a professional product mockup of a ${productContext} with this design: ${prompt}. 
+      The mockup should be photorealistic, studio lighting, floating on a dark background, premium quality apparel photography. 
+      Show the garment from the front view with the design clearly visible.`;
+    }
 
     console.log('Generating design with prompt:', enhancedPrompt);
+    console.log('Reference image provided:', !!referenceImage);
+
+    // Build the message content
+    const messageContent: Array<{ type: string; text?: string; image_url?: { url: string } }> = [];
+    
+    // Add the text prompt
+    messageContent.push({
+      type: 'text',
+      text: enhancedPrompt
+    });
+    
+    // Add reference image if provided
+    if (referenceImage) {
+      messageContent.push({
+        type: 'image_url',
+        image_url: {
+          url: referenceImage
+        }
+      });
+    }
 
     const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
@@ -49,7 +78,7 @@ serve(async (req) => {
         messages: [
           {
             role: 'user',
-            content: enhancedPrompt
+            content: referenceImage ? messageContent : enhancedPrompt
           }
         ],
         modalities: ['image', 'text']
