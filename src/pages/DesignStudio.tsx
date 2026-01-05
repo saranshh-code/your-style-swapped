@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Sparkles, Loader2, Download, RefreshCw } from "lucide-react";
+import { ArrowLeft, Sparkles, Loader2, Download, RefreshCw, Upload, X, Image } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,6 +19,43 @@ const DesignStudio = () => {
   const [productType, setProductType] = useState<ProductType>("hoodie");
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast.error("Please upload an image file");
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image must be less than 5MB");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const base64 = e.target?.result as string;
+      setUploadedImage(base64);
+      setUploadedFileName(file.name);
+      toast.success("Image uploaded successfully!");
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removeUploadedImage = () => {
+    setUploadedImage(null);
+    setUploadedFileName(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
 
   const handleGenerate = async () => {
     if (!prompt.trim()) {
@@ -31,7 +68,7 @@ const DesignStudio = () => {
 
     try {
       const { data, error } = await supabase.functions.invoke("generate-design", {
-        body: { prompt, productType },
+        body: { prompt, productType, referenceImage: uploadedImage },
       });
 
       if (error) {
@@ -135,6 +172,60 @@ const DesignStudio = () => {
               />
               <p className="text-xs text-muted-foreground">
                 Be specific about colors, style, and elements you want in your design.
+              </p>
+            </div>
+
+            {/* Image Upload */}
+            <div className="space-y-3">
+              <label className="text-sm font-medium text-foreground">Upload Logo or Inspiration</label>
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileUpload}
+                accept="image/*"
+                className="hidden"
+              />
+              
+              {uploadedImage ? (
+                <div className="relative p-4 rounded-xl bg-card border border-border">
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 rounded-lg overflow-hidden bg-secondary flex-shrink-0">
+                      <img 
+                        src={uploadedImage} 
+                        alt="Uploaded" 
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-foreground truncate">{uploadedFileName}</p>
+                      <p className="text-xs text-muted-foreground">Ready to incorporate into design</p>
+                    </div>
+                    <button
+                      onClick={removeUploadedImage}
+                      className="p-2 rounded-lg bg-secondary hover:bg-secondary/80 transition-colors"
+                    >
+                      <X className="w-4 h-4 text-muted-foreground" />
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  className="w-full p-6 rounded-xl border-2 border-dashed border-border hover:border-primary/50 bg-card/50 transition-colors group"
+                >
+                  <div className="flex flex-col items-center gap-3">
+                    <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center group-hover:bg-primary/10 transition-colors">
+                      <Upload className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                    </div>
+                    <div className="text-center">
+                      <p className="text-sm text-foreground">Click to upload an image</p>
+                      <p className="text-xs text-muted-foreground mt-1">PNG, JPG up to 5MB</p>
+                    </div>
+                  </div>
+                </button>
+              )}
+              <p className="text-xs text-muted-foreground">
+                Upload a logo or inspiration image and the AI will incorporate it into your design.
               </p>
             </div>
 
