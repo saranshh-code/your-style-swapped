@@ -2,10 +2,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import hoodieImage from "@/assets/hoodie-hero.png";
-
 const HeroSection = () => {
-  return (
-    <section className="relative min-h-screen flex items-center justify-center pt-24 pb-20">
+  return <section className="relative min-h-screen flex items-center justify-center pt-24 pb-20">
       <div className="container mx-auto px-6">
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
           {/* Left Content */}
@@ -40,7 +38,7 @@ const HeroSection = () => {
             </div>
 
             {/* Stats */}
-            <div className="flex gap-12 mt-16 justify-center lg:justify-start">
+            <div className="gap-12 mt-16 lg:justify-start flex-row flex items-start justify-center">
               <div>
                 <p className="text-3xl font-display text-foreground">10K+</p>
                 <p className="text-sm text-muted-foreground mt-1">Designs created</p>
@@ -63,11 +61,7 @@ const HeroSection = () => {
             <div className="relative">
               <div className="absolute inset-0 bg-secondary/50 rounded-3xl -rotate-3 scale-95" />
               <div className="relative bg-secondary rounded-2xl p-12">
-                <img
-                  src={hoodieImage}
-                  alt="Custom hoodie mockup"
-                  className="relative z-10 w-full max-w-[420px] animate-float drop-shadow-lg"
-                />
+                <img src={hoodieImage} alt="Custom hoodie mockup" className="relative z-10 w-full max-w-[420px] animate-float drop-shadow-lg" />
               </div>
             </div>
           </div>
@@ -79,8 +73,6 @@ const HeroSection = () => {
         <span className="text-xs text-muted-foreground tracking-widest uppercase">Scroll</span>
         <div className="w-px h-8 bg-gradient-to-b from-muted-foreground/50 to-transparent" />
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default HeroSection;
