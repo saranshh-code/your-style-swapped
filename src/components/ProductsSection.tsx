@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import hoodieImage from "@/assets/hoodie-hero.png";
 import tshirtImage from "@/assets/tshirt-product.png";
 import crewneckImage from "@/assets/crewneck-product.png";
@@ -27,55 +28,52 @@ const products = [
 
 const ProductsSection = () => {
   return (
-    <section id="products" className="py-24 bg-card relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-primary/5 to-transparent" />
-
-      <div className="container mx-auto px-6 relative z-10">
+    <section id="products" className="py-32">
+      <div className="container mx-auto px-6">
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-16">
-          <div>
-            <p className="text-primary uppercase tracking-widest text-sm mb-4">Our Canvas</p>
-            <h2 className="font-display text-5xl md:text-6xl text-foreground">CHOOSE YOUR STYLE</h2>
+          <div className="max-w-lg">
+            <p className="text-sm tracking-[0.2em] uppercase text-muted-foreground mb-4">Our Canvas</p>
+            <h2 className="font-display text-4xl md:text-5xl text-foreground">
+              Choose your style
+            </h2>
           </div>
           <Button variant="heroOutline" size="lg" className="mt-6 md:mt-0">
-            View All Products
-            <ArrowRight className="w-4 h-4" />
+            View all products
+            <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
         </div>
 
         {/* Product Grid */}
         <div className="grid md:grid-cols-3 gap-8">
-          {products.map((product, index) => (
-            <div
+          {products.map((product) => (
+            <Link
+              to="/design"
               key={product.name}
-              className="group relative rounded-2xl bg-background border border-border overflow-hidden hover:border-primary/50 transition-all duration-500"
+              className="group relative rounded-xl bg-secondary/50 border border-border/50 overflow-hidden hover:border-border hover:shadow-lg transition-all duration-500"
             >
               {/* Image Container */}
-              <div className="relative h-80 overflow-hidden bg-secondary/20">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-48 h-48 rounded-full bg-primary/10 blur-[60px] group-hover:bg-primary/20 transition-colors" />
-                </div>
+              <div className="relative h-80 overflow-hidden bg-secondary/30">
                 <img
                   src={product.image}
                   alt={product.name}
-                  className="absolute inset-0 w-full h-full object-contain p-8 transition-transform duration-500 group-hover:scale-110"
+                  className="absolute inset-0 w-full h-full object-contain p-8 transition-transform duration-700 group-hover:scale-105"
                 />
               </div>
 
               {/* Content */}
-              <div className="p-6">
+              <div className="p-6 bg-card">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="font-display text-2xl text-foreground">{product.name}</h3>
-                  <span className="text-primary font-semibold">{product.price}</span>
+                  <h3 className="font-display text-xl text-foreground">{product.name}</h3>
+                  <span className="text-sm font-medium text-muted-foreground">{product.price}</span>
                 </div>
                 <p className="text-muted-foreground text-sm">{product.description}</p>
-                <Button variant="ghost" className="mt-4 w-full group-hover:text-primary">
+                <div className="mt-4 flex items-center text-sm font-medium text-foreground group-hover:underline underline-offset-4">
                   Customize
-                  <ArrowRight className="w-4 h-4" />
-                </Button>
+                  <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
+                </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>

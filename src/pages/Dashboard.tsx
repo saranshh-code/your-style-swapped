@@ -101,22 +101,22 @@ const Dashboard = () => {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "pending":
-        return "bg-yellow-500/20 text-yellow-400";
+        return "bg-amber-50 text-amber-700 border-amber-200";
       case "processing":
-        return "bg-blue-500/20 text-blue-400";
+        return "bg-blue-50 text-blue-700 border-blue-200";
       case "shipped":
-        return "bg-purple-500/20 text-purple-400";
+        return "bg-purple-50 text-purple-700 border-purple-200";
       case "delivered":
-        return "bg-green-500/20 text-green-400";
+        return "bg-emerald-50 text-emerald-700 border-emerald-200";
       default:
-        return "bg-muted text-muted-foreground";
+        return "bg-muted text-muted-foreground border-border";
     }
   };
 
   if (loading || isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <Loader2 className="w-6 h-6 animate-spin text-foreground" />
       </div>
     );
   }
@@ -124,22 +124,21 @@ const Dashboard = () => {
   return (
     <main className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b border-border bg-card/50 backdrop-blur-lg sticky top-0 z-50">
-        <div className="container mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+      <header className="border-b border-border bg-background sticky top-0 z-50">
+        <div className="container mx-auto px-6 h-18 flex items-center justify-between">
+          <div className="flex items-center gap-6">
             <Link
               to="/"
               className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
             >
               <ArrowLeft className="w-4 h-4" />
-              <span>Home</span>
+              <span className="text-sm">Home</span>
             </Link>
-            <span className="text-border">|</span>
-            <h1 className="font-display text-xl text-foreground">MY DASHBOARD</h1>
+            <h1 className="font-display text-xl text-foreground">Dashboard</h1>
           </div>
           <div className="flex items-center gap-4">
-            <Link to="/" className="font-display text-2xl text-foreground">
-              SWAPS
+            <Link to="/" className="font-display text-xl text-foreground">
+              Swaps
             </Link>
             <Button
               variant="ghost"
@@ -155,47 +154,47 @@ const Dashboard = () => {
 
       <div className="container mx-auto px-6 py-12">
         {/* Tabs */}
-        <div className="flex gap-4 mb-8">
+        <div className="flex gap-2 mb-10">
           <button
             onClick={() => setActiveTab("designs")}
-            className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-md text-sm font-medium transition-all ${
               activeTab === "designs"
-                ? "bg-primary text-primary-foreground"
-                : "bg-card text-muted-foreground hover:text-foreground border border-border"
+                ? "bg-foreground text-background"
+                : "text-muted-foreground hover:text-foreground hover:bg-secondary"
             }`}
           >
             <Sparkles className="w-4 h-4" />
-            My Designs ({designs.length})
+            Designs ({designs.length})
           </button>
           <button
             onClick={() => setActiveTab("orders")}
-            className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-md text-sm font-medium transition-all ${
               activeTab === "orders"
-                ? "bg-primary text-primary-foreground"
-                : "bg-card text-muted-foreground hover:text-foreground border border-border"
+                ? "bg-foreground text-background"
+                : "text-muted-foreground hover:text-foreground hover:bg-secondary"
             }`}
           >
             <Package className="w-4 h-4" />
-            Order History ({orders.length})
+            Orders ({orders.length})
           </button>
         </div>
 
         {/* Content */}
         {activeTab === "designs" && (
-          <div className="space-y-6">
+          <div className="space-y-8">
             {designs.length === 0 ? (
-              <div className="text-center py-16 glass-card rounded-2xl">
-                <Sparkles className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+              <div className="text-center py-20 rounded-xl border border-border bg-card">
+                <Sparkles className="w-10 h-10 text-muted-foreground mx-auto mb-4" />
                 <h3 className="font-display text-2xl text-foreground mb-2">
-                  NO DESIGNS YET
+                  No designs yet
                 </h3>
-                <p className="text-muted-foreground mb-6">
+                <p className="text-muted-foreground mb-8 text-sm">
                   Create your first custom design in the Design Studio
                 </p>
                 <Link to="/design">
                   <Button variant="hero" size="lg">
-                    <Plus className="w-4 h-4" />
-                    Create Design
+                    <Plus className="w-4 h-4 mr-2" />
+                    Create design
                   </Button>
                 </Link>
               </div>
@@ -204,37 +203,37 @@ const Dashboard = () => {
                 {designs.map((design) => (
                   <div
                     key={design.id}
-                    className="glass-card rounded-xl overflow-hidden group"
+                    className="rounded-xl overflow-hidden border border-border bg-card group hover:shadow-lg transition-all duration-300"
                   >
-                    <div className="aspect-square bg-secondary relative overflow-hidden">
+                    <div className="aspect-square bg-secondary/30 relative overflow-hidden">
                       <img
                         src={design.generated_image_url}
                         alt={design.name}
                         className="w-full h-full object-contain p-4"
                       />
-                      <div className="absolute inset-0 bg-background/80 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                      <div className="absolute inset-0 bg-background/90 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                         <Button
                           variant="ghost"
                           size="icon"
                           onClick={() => handleDeleteDesign(design.id)}
-                          className="text-destructive hover:bg-destructive/20"
+                          className="text-destructive hover:bg-destructive/10"
                         >
                           <Trash2 className="w-5 h-5" />
                         </Button>
                       </div>
                     </div>
-                    <div className="p-4 space-y-2">
+                    <div className="p-5 space-y-3">
                       <h4 className="font-medium text-foreground truncate">
                         {design.name}
                       </h4>
                       <div className="flex gap-2 flex-wrap">
-                        <span className="px-2 py-1 rounded-full bg-secondary text-xs text-muted-foreground capitalize">
+                        <span className="px-2.5 py-1 rounded-md bg-secondary text-xs text-muted-foreground capitalize">
                           {design.product_type}
                         </span>
-                        <span className="px-2 py-1 rounded-full bg-secondary text-xs text-muted-foreground capitalize">
+                        <span className="px-2.5 py-1 rounded-md bg-secondary text-xs text-muted-foreground capitalize">
                           {design.fabric_type}
                         </span>
-                        <span className="px-2 py-1 rounded-full bg-secondary text-xs text-muted-foreground capitalize">
+                        <span className="px-2.5 py-1 rounded-md bg-secondary text-xs text-muted-foreground capitalize">
                           {design.color}
                         </span>
                       </div>
@@ -252,18 +251,18 @@ const Dashboard = () => {
         {activeTab === "orders" && (
           <div className="space-y-6">
             {orders.length === 0 ? (
-              <div className="text-center py-16 glass-card rounded-2xl">
-                <Package className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
+              <div className="text-center py-20 rounded-xl border border-border bg-card">
+                <Package className="w-10 h-10 text-muted-foreground mx-auto mb-4" />
                 <h3 className="font-display text-2xl text-foreground mb-2">
-                  NO ORDERS YET
+                  No orders yet
                 </h3>
-                <p className="text-muted-foreground mb-6">
+                <p className="text-muted-foreground mb-8 text-sm">
                   Order your first custom apparel from the Design Studio
                 </p>
                 <Link to="/design">
                   <Button variant="hero" size="lg">
-                    <Sparkles className="w-4 h-4" />
-                    Create Design
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    Create design
                   </Button>
                 </Link>
               </div>
@@ -272,10 +271,10 @@ const Dashboard = () => {
                 {orders.map((order) => (
                   <div
                     key={order.id}
-                    className="glass-card rounded-xl p-6 flex flex-col md:flex-row gap-6"
+                    className="rounded-xl border border-border bg-card p-6 flex flex-col md:flex-row gap-6"
                   >
                     {order.saved_designs && (
-                      <div className="w-24 h-24 rounded-lg bg-secondary overflow-hidden flex-shrink-0">
+                      <div className="w-20 h-20 rounded-lg bg-secondary/30 overflow-hidden flex-shrink-0">
                         <img
                           src={order.saved_designs.generated_image_url}
                           alt="Order design"
@@ -286,7 +285,7 @@ const Dashboard = () => {
                     <div className="flex-1 space-y-2">
                       <div className="flex items-center gap-3">
                         <span
-                          className={`px-3 py-1 rounded-full text-xs font-medium capitalize ${getStatusColor(
+                          className={`px-3 py-1 rounded-md border text-xs font-medium capitalize ${getStatusColor(
                             order.status
                           )}`}
                         >

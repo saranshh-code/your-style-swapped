@@ -1,86 +1,83 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import hoodieImage from "@/assets/hoodie-hero.png";
 
 const HeroSection = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-      {/* Background gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-card" />
-      
-      {/* Glow effect */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-primary/10 blur-[120px]" />
-
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+    <section className="relative min-h-screen flex items-center justify-center pt-24 pb-20">
+      <div className="container mx-auto px-6">
+        <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
           {/* Left Content */}
           <div className="text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/50 border border-border mb-6">
-              <Sparkles className="w-4 h-4 text-primary" />
-              <span className="text-sm text-muted-foreground">AI-Powered Design</span>
-            </div>
+            <p className="text-sm tracking-[0.2em] uppercase text-muted-foreground mb-6">
+              AI-Powered Custom Apparel
+            </p>
             
-            <h1 className="font-display text-6xl md:text-7xl lg:text-8xl leading-none mb-6">
-              YOUR VISION,
+            <h1 className="font-display text-5xl md:text-6xl lg:text-7xl leading-[1.1] mb-8 text-foreground">
+              Precision crafted,
               <br />
-              <span className="gradient-text">WE CREATE</span>
+              <span className="text-muted-foreground">uniquely yours</span>
             </h1>
             
-            <p className="text-lg md:text-xl text-muted-foreground max-w-lg mx-auto lg:mx-0 mb-8">
-              Upload your inspiration, choose your style, and let AI craft the perfect custom apparel. 
-              From concept to doorstep.
+            <p className="text-lg text-muted-foreground max-w-md mx-auto lg:mx-0 mb-10 leading-relaxed">
+              Transform your vision into premium custom apparel with AI-powered design. 
+              No minimum orders, delivered to your door.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Button variant="hero" size="xl" asChild>
                 <Link to="/design">
-                  Design Now
-                  <ArrowRight className="w-5 h-5" />
+                  Start designing
+                  <ArrowRight className="w-4 h-4 ml-2" />
                 </Link>
               </Button>
               <Button variant="heroOutline" size="xl" asChild>
                 <a href="#how-it-works">
-                  See How It Works
+                  Learn more
                 </a>
               </Button>
             </div>
 
             {/* Stats */}
-            <div className="flex gap-8 mt-12 justify-center lg:justify-start">
+            <div className="flex gap-12 mt-16 justify-center lg:justify-start">
               <div>
-                <p className="font-display text-4xl text-foreground">10K+</p>
-                <p className="text-sm text-muted-foreground">Designs Created</p>
+                <p className="text-3xl font-display text-foreground">10K+</p>
+                <p className="text-sm text-muted-foreground mt-1">Designs created</p>
               </div>
+              <div className="w-px bg-border" />
               <div>
-                <p className="font-display text-4xl text-foreground">48HR</p>
-                <p className="text-sm text-muted-foreground">Fast Delivery</p>
+                <p className="text-3xl font-display text-foreground">48h</p>
+                <p className="text-sm text-muted-foreground mt-1">Fast delivery</p>
               </div>
+              <div className="w-px bg-border" />
               <div>
-                <p className="font-display text-4xl text-foreground">100%</p>
-                <p className="text-sm text-muted-foreground">Custom Made</p>
+                <p className="text-3xl font-display text-foreground">100%</p>
+                <p className="text-sm text-muted-foreground mt-1">Custom made</p>
               </div>
             </div>
           </div>
 
-          {/* Right Content - Floating Hoodie */}
+          {/* Right Content - Product Image */}
           <div className="relative flex justify-center items-center">
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-[400px] h-[400px] rounded-full bg-primary/20 blur-[80px]" />
+            <div className="relative">
+              <div className="absolute inset-0 bg-secondary/50 rounded-3xl -rotate-3 scale-95" />
+              <div className="relative bg-secondary rounded-2xl p-12">
+                <img
+                  src={hoodieImage}
+                  alt="Custom hoodie mockup"
+                  className="relative z-10 w-full max-w-[420px] animate-float drop-shadow-lg"
+                />
+              </div>
             </div>
-            <img
-              src={hoodieImage}
-              alt="Custom hoodie mockup"
-              className="relative z-10 w-full max-w-[500px] animate-float drop-shadow-2xl"
-            />
           </div>
         </div>
       </div>
 
       {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-        <span className="text-xs text-muted-foreground uppercase tracking-widest">Scroll</span>
-        <div className="w-px h-12 bg-gradient-to-b from-muted-foreground to-transparent" />
+      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3">
+        <span className="text-xs text-muted-foreground tracking-widest uppercase">Scroll</span>
+        <div className="w-px h-8 bg-gradient-to-b from-muted-foreground/50 to-transparent" />
       </div>
     </section>
   );
