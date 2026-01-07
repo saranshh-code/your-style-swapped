@@ -53,13 +53,11 @@ const DesignStudio = () => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
     if (!file.type.startsWith('image/')) {
       toast.error("Please upload an image file");
       return;
     }
 
-    // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
       toast.error("Image must be less than 5MB");
       return;
@@ -178,19 +176,18 @@ const DesignStudio = () => {
   return (
     <main className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b border-border bg-card/50 backdrop-blur-lg sticky top-0 z-50">
-        <div className="container mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-4">
+      <header className="border-b border-border bg-background sticky top-0 z-50">
+        <div className="container mx-auto px-6 h-18 flex items-center justify-between">
+          <div className="flex items-center gap-6">
             <Link to="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
               <ArrowLeft className="w-4 h-4" />
-              <span>Back</span>
+              <span className="text-sm">Back</span>
             </Link>
-            <span className="text-border">|</span>
-            <h1 className="font-display text-xl text-foreground">DESIGN STUDIO</h1>
+            <h1 className="font-display text-xl text-foreground">Design Studio</h1>
           </div>
           <div className="flex items-center gap-4">
-            <Link to="/" className="font-display text-2xl text-foreground">
-              SWAPS
+            <Link to="/" className="font-display text-xl text-foreground">
+              Swaps
             </Link>
             {user ? (
               <Link
@@ -201,7 +198,7 @@ const DesignStudio = () => {
               </Link>
             ) : (
               <Button variant="ghost" size="sm" asChild>
-                <Link to="/auth">Sign In</Link>
+                <Link to="/auth">Sign in</Link>
               </Button>
             )}
           </div>
@@ -209,31 +206,31 @@ const DesignStudio = () => {
       </header>
 
       <div className="container mx-auto px-6 py-12">
-        <div className="grid lg:grid-cols-2 gap-12">
+        <div className="grid lg:grid-cols-2 gap-16">
           {/* Left Panel - Controls */}
-          <div className="space-y-8">
+          <div className="space-y-10">
             <div>
-              <div className="flex items-center gap-2 mb-4">
-                <Sparkles className="w-5 h-5 text-primary" />
-                <h2 className="font-display text-2xl text-foreground">AI DESIGN GENERATOR</h2>
-              </div>
-              <p className="text-muted-foreground">
-                Describe your design idea and our AI will create a custom mockup for you.
+              <p className="text-sm tracking-[0.2em] uppercase text-muted-foreground mb-3">
+                AI Design Generator
+              </p>
+              <h2 className="font-display text-3xl text-foreground mb-2">Create your design</h2>
+              <p className="text-muted-foreground text-sm">
+                Describe your vision and our AI will create a custom mockup for you.
               </p>
             </div>
 
             {/* Product Type Selection */}
-            <div className="space-y-3">
+            <div className="space-y-4">
               <label className="text-sm font-medium text-foreground">Product Type</label>
-              <div className="flex gap-3">
+              <div className="flex gap-2">
                 {productOptions.map((option) => (
                   <button
                     key={option.value}
                     onClick={() => setProductType(option.value)}
-                    className={`px-4 py-2 rounded-lg border transition-all duration-300 ${
+                    className={`px-5 py-2.5 rounded-md text-sm font-medium transition-all duration-200 ${
                       productType === option.value
-                        ? "border-primary bg-primary/10 text-foreground"
-                        : "border-border bg-card text-muted-foreground hover:border-primary/50"
+                        ? "bg-foreground text-background"
+                        : "bg-secondary text-muted-foreground hover:text-foreground"
                     }`}
                   >
                     {option.label}
@@ -243,51 +240,46 @@ const DesignStudio = () => {
             </div>
 
             {/* Color Selection */}
-            <div className="space-y-3">
+            <div className="space-y-4">
               <label className="text-sm font-medium text-foreground flex items-center gap-2">
                 <Palette className="w-4 h-4" />
                 Color
               </label>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap gap-3">
                 {colorOptions.map((color) => (
                   <button
                     key={color.value}
                     onClick={() => setSelectedColor(color.value)}
-                    className={`group relative w-10 h-10 rounded-full border-2 transition-all duration-300 ${
+                    className={`group relative w-10 h-10 rounded-full transition-all duration-200 ${
                       selectedColor === color.value
-                        ? "border-primary scale-110 shadow-lg"
-                        : "border-transparent hover:scale-105"
+                        ? "ring-2 ring-foreground ring-offset-2 ring-offset-background scale-110"
+                        : "hover:scale-105"
                     }`}
-                    style={{ backgroundColor: color.hex }}
+                    style={{ 
+                      backgroundColor: color.hex,
+                      border: color.value === 'white' || color.value === 'cream' ? '1px solid hsl(var(--border))' : 'none'
+                    }}
                     title={color.label}
-                  >
-                    {selectedColor === color.value && (
-                      <span className="absolute inset-0 flex items-center justify-center">
-                        <span className={`w-2 h-2 rounded-full ${
-                          color.value === 'white' || color.value === 'cream' ? 'bg-foreground' : 'bg-white'
-                        }`} />
-                      </span>
-                    )}
-                    <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                      {color.label}
-                    </span>
-                  </button>
+                  />
                 ))}
               </div>
+              <p className="text-xs text-muted-foreground">
+                Selected: <span className="capitalize">{selectedColor}</span>
+              </p>
             </div>
 
             {/* Fabric Selection */}
-            <div className="space-y-3">
+            <div className="space-y-4">
               <label className="text-sm font-medium text-foreground">Fabric</label>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-3 gap-3">
                 {fabricOptions.map((fabric) => (
                   <button
                     key={fabric.value}
                     onClick={() => setFabricType(fabric.value)}
-                    className={`p-3 rounded-lg border transition-all duration-300 text-left ${
+                    className={`p-4 rounded-lg border transition-all duration-200 text-left ${
                       fabricType === fabric.value
-                        ? "border-primary bg-primary/10"
-                        : "border-border bg-card hover:border-primary/50"
+                        ? "border-foreground bg-secondary"
+                        : "border-border bg-card hover:border-muted-foreground"
                     }`}
                   >
                     <p className={`text-sm font-medium ${
@@ -295,7 +287,7 @@ const DesignStudio = () => {
                     }`}>
                       {fabric.label}
                     </p>
-                    <p className="text-xs text-muted-foreground mt-0.5">
+                    <p className="text-xs text-muted-foreground mt-1">
                       {fabric.description}
                     </p>
                   </button>
@@ -304,13 +296,13 @@ const DesignStudio = () => {
             </div>
 
             {/* Prompt Input */}
-            <div className="space-y-3">
+            <div className="space-y-4">
               <label className="text-sm font-medium text-foreground">Describe Your Design</label>
               <Textarea
                 placeholder="Example: A vintage sunset with palm trees silhouette, retro 80s style with neon pink and orange gradients..."
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                className="min-h-[150px] bg-card border-border resize-none"
+                className="min-h-[140px] bg-card border-border resize-none text-sm"
               />
               <p className="text-xs text-muted-foreground">
                 Be specific about colors, style, and elements you want in your design.
@@ -318,7 +310,7 @@ const DesignStudio = () => {
             </div>
 
             {/* Image Upload */}
-            <div className="space-y-3">
+            <div className="space-y-4">
               <label className="text-sm font-medium text-foreground">Upload Logo or Inspiration</label>
               <input
                 type="file"
@@ -329,9 +321,9 @@ const DesignStudio = () => {
               />
               
               {uploadedImage ? (
-                <div className="relative p-4 rounded-xl bg-card border border-border">
+                <div className="relative p-4 rounded-lg bg-card border border-border">
                   <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-lg overflow-hidden bg-secondary flex-shrink-0">
+                    <div className="w-14 h-14 rounded-lg overflow-hidden bg-secondary flex-shrink-0">
                       <img 
                         src={uploadedImage} 
                         alt="Uploaded" 
@@ -340,11 +332,11 @@ const DesignStudio = () => {
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm text-foreground truncate">{uploadedFileName}</p>
-                      <p className="text-xs text-muted-foreground">Ready to incorporate into design</p>
+                      <p className="text-xs text-muted-foreground">Ready to incorporate</p>
                     </div>
                     <button
                       onClick={removeUploadedImage}
-                      className="p-2 rounded-lg bg-secondary hover:bg-secondary/80 transition-colors"
+                      className="p-2 rounded-lg hover:bg-secondary transition-colors"
                     >
                       <X className="w-4 h-4 text-muted-foreground" />
                     </button>
@@ -353,22 +345,19 @@ const DesignStudio = () => {
               ) : (
                 <button
                   onClick={() => fileInputRef.current?.click()}
-                  className="w-full p-6 rounded-xl border-2 border-dashed border-border hover:border-primary/50 bg-card/50 transition-colors group"
+                  className="w-full p-8 rounded-lg border border-dashed border-border hover:border-muted-foreground bg-card transition-colors group"
                 >
                   <div className="flex flex-col items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center group-hover:bg-primary/10 transition-colors">
-                      <Upload className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                    <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center">
+                      <Upload className="w-5 h-5 text-muted-foreground" />
                     </div>
                     <div className="text-center">
-                      <p className="text-sm text-foreground">Click to upload an image</p>
+                      <p className="text-sm text-foreground">Click to upload</p>
                       <p className="text-xs text-muted-foreground mt-1">PNG, JPG up to 5MB</p>
                     </div>
                   </div>
                 </button>
               )}
-              <p className="text-xs text-muted-foreground">
-                Upload a logo or inspiration image and the AI will incorporate it into your design.
-              </p>
             </div>
 
             {/* Generate Button */}
@@ -387,7 +376,7 @@ const DesignStudio = () => {
               ) : (
                 <>
                   <Sparkles className="w-5 h-5" />
-                  Generate Design
+                  Generate design
                 </>
               )}
             </Button>
@@ -405,7 +394,7 @@ const DesignStudio = () => {
                   <button
                     key={example}
                     onClick={() => setPrompt(example)}
-                    className="px-3 py-1.5 rounded-full bg-secondary text-sm text-muted-foreground hover:text-foreground hover:bg-secondary/80 transition-colors"
+                    className="px-3 py-1.5 rounded-md bg-secondary text-xs text-muted-foreground hover:text-foreground transition-colors"
                   >
                     {example}
                   </button>
@@ -416,20 +405,13 @@ const DesignStudio = () => {
 
           {/* Right Panel - Preview */}
           <div className="space-y-6">
-            <h3 className="font-display text-xl text-foreground">PREVIEW</h3>
+            <p className="text-sm tracking-[0.2em] uppercase text-muted-foreground">Preview</p>
             
-            <div className="relative aspect-square rounded-2xl bg-card border border-border overflow-hidden">
-              {/* Glow effect */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="w-2/3 h-2/3 rounded-full bg-primary/10 blur-[80px]" />
-              </div>
-
+            <div className="relative aspect-square rounded-xl bg-secondary/30 border border-border overflow-hidden">
               {isGenerating ? (
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
-                  <div className="relative">
-                    <div className="w-16 h-16 rounded-full border-4 border-primary/30 border-t-primary animate-spin" />
-                  </div>
-                  <p className="text-muted-foreground">Creating your design...</p>
+                  <Loader2 className="w-8 h-8 animate-spin text-foreground" />
+                  <p className="text-muted-foreground text-sm">Creating your design...</p>
                 </div>
               ) : generatedImage ? (
                 <img
@@ -439,10 +421,10 @@ const DesignStudio = () => {
                 />
               ) : (
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-8">
-                  <div className="w-24 h-24 rounded-2xl bg-secondary/50 flex items-center justify-center">
-                    <Sparkles className="w-10 h-10 text-muted-foreground" />
+                  <div className="w-20 h-20 rounded-xl bg-secondary flex items-center justify-center">
+                    <Sparkles className="w-8 h-8 text-muted-foreground" />
                   </div>
-                  <p className="text-center text-muted-foreground">
+                  <p className="text-center text-muted-foreground text-sm">
                     Your AI-generated design will appear here
                   </p>
                 </div>
@@ -451,7 +433,7 @@ const DesignStudio = () => {
 
             {/* Action Buttons */}
             {generatedImage && (
-              <div className="flex gap-4">
+              <div className="flex gap-3">
                 <Button
                   variant="heroOutline"
                   size="lg"
@@ -489,12 +471,12 @@ const DesignStudio = () => {
             )}
 
             {generatedImage && (
-              <div className="p-4 rounded-xl bg-secondary/30 border border-border">
+              <div className="p-6 rounded-xl bg-card border border-border">
                 <p className="text-sm text-muted-foreground">
                   Love your design? We can produce this on premium apparel and ship it to you within 48 hours.
                 </p>
                 <Button variant="hero" size="lg" className="w-full mt-4">
-                  Order This Design
+                  Order this design
                 </Button>
               </div>
             )}

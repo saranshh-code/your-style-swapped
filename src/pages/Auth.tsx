@@ -77,7 +77,7 @@ const Auth = () => {
             toast.error(error.message);
           }
         } else {
-          toast.success("Account created! Welcome to SWAPS!");
+          toast.success("Account created! Welcome to Swaps!");
           navigate("/design");
         }
       }
@@ -91,7 +91,7 @@ const Auth = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <Loader2 className="w-6 h-6 animate-spin text-foreground" />
       </div>
     );
   }
@@ -99,41 +99,37 @@ const Auth = () => {
   return (
     <main className="min-h-screen bg-background flex flex-col">
       {/* Header */}
-      <header className="border-b border-border bg-card/50 backdrop-blur-lg">
-        <div className="container mx-auto px-6 h-16 flex items-center justify-between">
+      <header className="border-b border-border">
+        <div className="container mx-auto px-6 h-18 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
             <ArrowLeft className="w-4 h-4" />
-            <span>Back</span>
+            <span className="text-sm">Back</span>
           </Link>
-          <Link to="/" className="font-display text-2xl text-foreground">
-            SWAPS
+          <Link to="/" className="font-display text-xl text-foreground">
+            Swaps
           </Link>
+          <div className="w-16" />
         </div>
       </header>
 
-      <div className="flex-1 flex items-center justify-center px-6 py-12">
-        <div className="w-full max-w-md">
-          {/* Glow effect */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="w-96 h-96 rounded-full bg-primary/5 blur-[100px]" />
-          </div>
-
-          <div className="relative glass-card rounded-2xl p-8 space-y-6">
+      <div className="flex-1 flex items-center justify-center px-6 py-16">
+        <div className="w-full max-w-sm">
+          <div className="space-y-8">
             <div className="text-center space-y-2">
               <h1 className="font-display text-3xl text-foreground">
-                {isLogin ? "WELCOME BACK" : "CREATE ACCOUNT"}
+                {isLogin ? "Welcome back" : "Create account"}
               </h1>
-              <p className="text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 {isLogin
                   ? "Sign in to access your designs and orders"
-                  : "Join SWAPS to save your designs and track orders"}
+                  : "Join Swaps to save your designs and track orders"}
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-5">
               {!isLogin && (
                 <div className="space-y-2">
-                  <Label htmlFor="fullName">Full Name</Label>
+                  <Label htmlFor="fullName" className="text-sm font-medium">Full Name</Label>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input
@@ -142,14 +138,14 @@ const Auth = () => {
                       placeholder="John Doe"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      className="pl-10 bg-card border-border"
+                      className="pl-10 h-12 bg-background border-border"
                     />
                   </div>
                 </div>
               )}
 
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="text-sm font-medium">Email</Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
@@ -158,14 +154,14 @@ const Auth = () => {
                     placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10 bg-card border-border"
+                    className="pl-10 h-12 bg-background border-border"
                     required
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password" className="text-sm font-medium">Password</Label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input
@@ -174,7 +170,7 @@ const Auth = () => {
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 bg-card border-border"
+                    className="pl-10 h-12 bg-background border-border"
                     required
                   />
                 </div>
@@ -184,7 +180,7 @@ const Auth = () => {
                 type="submit"
                 variant="hero"
                 size="lg"
-                className="w-full"
+                className="w-full h-12"
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -193,7 +189,7 @@ const Auth = () => {
                     {isLogin ? "Signing in..." : "Creating account..."}
                   </>
                 ) : (
-                  isLogin ? "Sign In" : "Create Account"
+                  isLogin ? "Sign in" : "Create account"
                 )}
               </Button>
             </form>
@@ -205,9 +201,9 @@ const Auth = () => {
                 className="text-sm text-muted-foreground hover:text-foreground transition-colors"
               >
                 {isLogin ? (
-                  <>Don't have an account? <span className="text-primary">Sign up</span></>
+                  <>Don't have an account? <span className="font-medium text-foreground">Sign up</span></>
                 ) : (
-                  <>Already have an account? <span className="text-primary">Sign in</span></>
+                  <>Already have an account? <span className="font-medium text-foreground">Sign in</span></>
                 )}
               </button>
             </div>

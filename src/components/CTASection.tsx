@@ -1,28 +1,33 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const CTASection = () => {
   return (
-    <section className="py-24 relative overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/20 via-primary/10 to-primary/20" />
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,hsl(var(--background))_70%)]" />
-
-      <div className="container mx-auto px-6 relative z-10">
+    <section className="py-32">
+      <div className="container mx-auto px-6">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="font-display text-5xl md:text-7xl text-foreground mb-6">
-            READY TO CREATE?
+          <p className="text-sm tracking-[0.2em] uppercase text-muted-foreground mb-6">
+            Get Started
+          </p>
+          <h2 className="font-display text-4xl md:text-6xl text-foreground mb-8">
+            Ready to create
+            <br />
+            something unique?
           </h2>
-          <p className="text-xl text-muted-foreground mb-10">
-            Turn your ideas into custom apparel today. No minimum orders, no design skills required.
+          <p className="text-lg text-muted-foreground mb-12 max-w-xl mx-auto">
+            Turn your ideas into custom apparel today. No minimum orders, no design skills required. 
+            Just your vision and our AI.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button variant="glow" size="xl">
-              Start Your Design
-              <ArrowRight className="w-5 h-5" />
+            <Button variant="hero" size="xl" asChild>
+              <Link to="/design">
+                Start your design
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Link>
             </Button>
             <Button variant="heroOutline" size="xl">
-              Contact Sales
+              Contact sales
             </Button>
           </div>
         </div>

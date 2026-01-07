@@ -26,23 +26,23 @@ const Navbar = () => {
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-background/90 backdrop-blur-lg border-b border-border/50" : "bg-transparent"
+        isScrolled ? "bg-background/95 backdrop-blur-md border-b border-border" : "bg-transparent"
       }`}
     >
       <div className="container mx-auto px-6">
-        <div className="flex items-center justify-between h-20">
+        <div className="flex items-center justify-between h-18">
           {/* Logo */}
-          <Link to="/" className="font-display text-3xl tracking-wider text-foreground">
-            SWAPS
+          <Link to="/" className="font-display text-2xl tracking-tight text-foreground">
+            Swaps
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-10">
             {navLinks.map((link) => (
               <a
                 key={link.label}
                 href={link.href}
-                className="text-muted-foreground hover:text-foreground transition-colors duration-300"
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200"
               >
                 {link.label}
               </a>
@@ -59,16 +59,16 @@ const Navbar = () => {
                     Dashboard
                   </Link>
                 </Button>
-                <Button variant="hero" size="lg" asChild>
+                <Button variant="hero" size="default" asChild>
                   <Link to="/design">Start Creating</Link>
                 </Button>
               </>
             ) : (
               <>
                 <Button variant="ghost" size="sm" asChild>
-                  <Link to="/auth">Sign In</Link>
+                  <Link to="/auth">Sign in</Link>
                 </Button>
-                <Button variant="hero" size="lg" asChild>
+                <Button variant="hero" size="default" asChild>
                   <Link to="/design">Start Creating</Link>
                 </Button>
               </>
@@ -86,7 +86,7 @@ const Navbar = () => {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden py-6 border-t border-border/50 animate-fade-in">
+          <div className="md:hidden py-6 border-t border-border animate-fade-in">
             <div className="flex flex-col gap-4">
               {navLinks.map((link) => (
                 <a
@@ -113,7 +113,7 @@ const Navbar = () => {
                   className="text-muted-foreground hover:text-foreground transition-colors py-2"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  Sign In
+                  Sign in
                 </Link>
               )}
               <Button variant="hero" size="lg" className="mt-4" asChild>

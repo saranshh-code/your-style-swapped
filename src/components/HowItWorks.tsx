@@ -4,21 +4,21 @@ const steps = [
   {
     icon: Upload,
     number: "01",
-    title: "UPLOAD & CUSTOMIZE",
+    title: "Upload & Customize",
     description:
-      "Share your inspiration—upload a logo, image, or describe your vision. Select colors, fabrics, and embroidery styles.",
+      "Share your inspiration—upload a logo, image, or describe your vision. Select colors, fabrics, and styles.",
   },
   {
     icon: Wand2,
     number: "02",
-    title: "AI MAGIC",
+    title: "AI Generates",
     description:
-      "Our AI transforms your ideas into stunning, production-ready designs. Preview your custom mockup in seconds.",
+      "Our AI transforms your ideas into stunning, production-ready designs. Preview your custom mockup instantly.",
   },
   {
     icon: Package,
     number: "03",
-    title: "WE SHIP",
+    title: "We Deliver",
     description:
       "Once approved, we produce your premium custom apparel and ship it directly to your door within 48 hours.",
   },
@@ -26,40 +26,46 @@ const steps = [
 
 const HowItWorks = () => {
   return (
-    <section id="how-it-works" className="py-24 relative">
+    <section id="how-it-works" className="py-32 bg-secondary/30">
       <div className="container mx-auto px-6">
         {/* Section Header */}
-        <div className="text-center mb-16">
-          <p className="text-primary uppercase tracking-widest text-sm mb-4">The Process</p>
-          <h2 className="font-display text-5xl md:text-6xl text-foreground">HOW IT WORKS</h2>
+        <div className="max-w-2xl mx-auto text-center mb-20">
+          <p className="text-sm tracking-[0.2em] uppercase text-muted-foreground mb-4">The Process</p>
+          <h2 className="font-display text-4xl md:text-5xl text-foreground mb-6">
+            How it works
+          </h2>
+          <p className="text-muted-foreground text-lg">
+            From concept to creation in three simple steps.
+          </p>
         </div>
 
         {/* Steps */}
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
           {steps.map((step, index) => (
             <div
               key={step.number}
-              className="group relative p-8 rounded-2xl bg-card border border-border hover:border-primary/50 transition-all duration-500"
-              style={{ animationDelay: `${index * 150}ms` }}
+              className="relative"
             >
-              {/* Number */}
-              <span className="absolute top-4 right-4 font-display text-6xl text-muted/30">
-                {step.number}
-              </span>
-
-              {/* Icon */}
-              <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-6 group-hover:bg-primary/20 transition-colors">
-                <step.icon className="w-7 h-7 text-primary" />
-              </div>
-
-              {/* Content */}
-              <h3 className="font-display text-2xl text-foreground mb-3">{step.title}</h3>
-              <p className="text-muted-foreground leading-relaxed">{step.description}</p>
-
-              {/* Connector line (except last) */}
+              {/* Connector line */}
               {index < steps.length - 1 && (
-                <div className="hidden md:block absolute top-1/2 -right-4 w-8 h-px bg-gradient-to-r from-border to-transparent" />
+                <div className="hidden md:block absolute top-12 left-[calc(50%+60px)] w-[calc(100%-60px)] h-px bg-border" />
               )}
+              
+              <div className="relative p-8 rounded-xl bg-card border border-border/50 text-center">
+                {/* Number badge */}
+                <span className="inline-block text-xs tracking-[0.2em] text-muted-foreground mb-6">
+                  STEP {step.number}
+                </span>
+
+                {/* Icon */}
+                <div className="w-14 h-14 rounded-full bg-secondary flex items-center justify-center mx-auto mb-6">
+                  <step.icon className="w-6 h-6 text-foreground" />
+                </div>
+
+                {/* Content */}
+                <h3 className="font-display text-xl text-foreground mb-4">{step.title}</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed">{step.description}</p>
+              </div>
             </div>
           ))}
         </div>
