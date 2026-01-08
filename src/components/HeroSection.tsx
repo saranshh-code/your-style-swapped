@@ -2,27 +2,44 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import hoodieImage from "@/assets/hoodie-hero.png";
+
 const HeroSection = () => {
-  return <section className="relative min-h-screen flex items-center justify-center pt-24 pb-20">
-      <div className="container mx-auto px-6">
+  return (
+    <section className="relative min-h-screen flex items-center justify-center pt-24 pb-20 overflow-hidden">
+      {/* Video Background */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="auto"
+        className="absolute inset-0 w-full h-full object-cover"
+      >
+        <source src="/videos/hero-background.mp4" type="video/mp4" />
+      </video>
+
+      {/* Dark Overlay for Text Readability */}
+      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/30" />
+
+      <div className="container mx-auto px-6 relative z-10">
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
           {/* Left Content */}
           <div className="text-center lg:text-left">
-            <p className="text-sm tracking-[0.2em] uppercase text-muted-foreground mb-6">
+            <p className="text-sm tracking-[0.2em] uppercase text-white/60 mb-6">
               AI-Powered Custom Apparel
             </p>
-            
-            <h1 className="font-display text-5xl md:text-6xl lg:text-7xl leading-[1.1] mb-8 text-foreground">
+
+            <h1 className="font-display text-5xl md:text-6xl lg:text-7xl leading-[1.1] mb-8 text-white">
               Precision crafted,
               <br />
-              <span className="text-muted-foreground">uniquely yours</span>
+              <span className="text-white/70">uniquely yours</span>
             </h1>
-            
-            <p className="text-lg text-muted-foreground max-w-md mx-auto lg:mx-0 mb-10 leading-relaxed">
-              Transform your vision into premium custom apparel with AI-powered design. 
+
+            <p className="text-lg text-white/70 max-w-md mx-auto lg:mx-0 mb-10 leading-relaxed">
+              Transform your vision into premium custom apparel with AI-powered design.
               No minimum orders, delivered to your door.
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Button variant="hero" size="xl" asChild>
                 <Link to="/design">
@@ -30,7 +47,7 @@ const HeroSection = () => {
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Link>
               </Button>
-              <Button variant="heroOutline" size="xl" asChild>
+              <Button variant="heroOutline" size="xl" asChild className="border-white/30 text-white hover:bg-white/10">
                 <a href="#how-it-works">
                   Learn more
                 </a>
@@ -40,18 +57,18 @@ const HeroSection = () => {
             {/* Stats */}
             <div className="gap-12 mt-16 lg:justify-start flex-row flex items-start justify-center">
               <div>
-                <p className="text-3xl font-display text-foreground">10K+</p>
-                <p className="text-sm text-muted-foreground mt-1">Designs created</p>
+                <p className="text-3xl font-display text-white">10K+</p>
+                <p className="text-sm text-white/60 mt-1">Designs created</p>
               </div>
-              <div className="w-px bg-border" />
+              <div className="w-px h-12 bg-white/20" />
               <div>
-                <p className="text-3xl font-display text-foreground">48h</p>
-                <p className="text-sm text-muted-foreground mt-1">Fast delivery</p>
+                <p className="text-3xl font-display text-white">48h</p>
+                <p className="text-sm text-white/60 mt-1">Fast delivery</p>
               </div>
-              <div className="w-px bg-border" />
+              <div className="w-px h-12 bg-white/20" />
               <div>
-                <p className="text-3xl font-display text-foreground">100%</p>
-                <p className="text-sm text-muted-foreground mt-1">Custom made</p>
+                <p className="text-3xl font-display text-white">100%</p>
+                <p className="text-sm text-white/60 mt-1">Custom made</p>
               </div>
             </div>
           </div>
@@ -59,9 +76,13 @@ const HeroSection = () => {
           {/* Right Content - Product Image */}
           <div className="relative flex justify-center items-center">
             <div className="relative">
-              <div className="absolute inset-0 bg-secondary/50 rounded-3xl -rotate-3 scale-95" />
-              <div className="relative bg-secondary rounded-2xl p-12">
-                <img src={hoodieImage} alt="Custom hoodie mockup" className="relative z-10 w-full max-w-[420px] animate-float drop-shadow-lg" />
+              <div className="absolute inset-0 bg-white/5 backdrop-blur-sm rounded-3xl -rotate-3 scale-95" />
+              <div className="relative bg-white/10 backdrop-blur-md rounded-2xl p-12 border border-white/10">
+                <img
+                  src={hoodieImage}
+                  alt="Custom hoodie mockup"
+                  className="relative z-10 w-full max-w-[420px] animate-float drop-shadow-2xl"
+                />
               </div>
             </div>
           </div>
@@ -69,10 +90,12 @@ const HeroSection = () => {
       </div>
 
       {/* Scroll indicator */}
-      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3">
-        <span className="text-xs text-muted-foreground tracking-widest uppercase">Scroll</span>
-        <div className="w-px h-8 bg-gradient-to-b from-muted-foreground/50 to-transparent" />
+      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 z-10">
+        <span className="text-xs text-white/50 tracking-widest uppercase">Scroll</span>
+        <div className="w-px h-8 bg-gradient-to-b from-white/50 to-transparent" />
       </div>
-    </section>;
+    </section>
+  );
 };
+
 export default HeroSection;
