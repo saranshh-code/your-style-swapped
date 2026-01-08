@@ -33,12 +33,12 @@ const ProductsSection = () => {
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-16">
           <div className="max-w-lg">
-            <p className="text-sm tracking-[0.2em] uppercase text-muted-foreground mb-4">Our Canvas</p>
-            <h2 className="font-display text-4xl md:text-5xl text-foreground">
+            <p className="text-sm tracking-[0.2em] uppercase text-white/60 mb-4">Our Canvas</p>
+            <h2 className="font-display text-4xl md:text-5xl text-white">
               Choose your style
             </h2>
           </div>
-          <Button variant="heroOutline" size="lg" className="mt-6 md:mt-0">
+          <Button variant="heroOutline" size="lg" className="mt-6 md:mt-0 border-white/30 text-white hover:bg-white/10">
             View all products
             <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
@@ -50,10 +50,10 @@ const ProductsSection = () => {
             <Link
               to="/design"
               key={product.name}
-              className="group relative rounded-xl bg-secondary/50 border border-border/50 overflow-hidden hover:border-border hover:shadow-lg transition-all duration-500"
+              className="group relative rounded-xl bg-white/10 backdrop-blur-md border border-white/10 overflow-hidden hover:border-white/30 hover:shadow-lg transition-all duration-500"
             >
               {/* Image Container */}
-              <div className="relative h-80 overflow-hidden bg-secondary/30">
+              <div className="relative h-80 overflow-hidden bg-white/5">
                 <img
                   src={product.image}
                   alt={product.name}
@@ -62,13 +62,13 @@ const ProductsSection = () => {
               </div>
 
               {/* Content */}
-              <div className="p-6 bg-card">
+              <div className="p-6 bg-black/30 backdrop-blur-sm">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="font-display text-xl text-foreground">{product.name}</h3>
-                  <span className="text-sm font-medium text-muted-foreground">{product.price}</span>
+                  <h3 className="font-display text-xl text-white">{product.name}</h3>
+                  <span className="text-sm font-medium text-white/70">{product.price}</span>
                 </div>
-                <p className="text-muted-foreground text-sm">{product.description}</p>
-                <div className="mt-4 flex items-center text-sm font-medium text-foreground group-hover:underline underline-offset-4">
+                <p className="text-white/70 text-sm">{product.description}</p>
+                <div className="mt-4 flex items-center text-sm font-medium text-white group-hover:underline underline-offset-4">
                   Customize
                   <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-300 group-hover:translate-x-1" />
                 </div>

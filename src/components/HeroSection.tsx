@@ -6,20 +6,8 @@ import hoodieImage from "@/assets/hoodie-hero.png";
 const HeroSection = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center pt-24 pb-20 overflow-hidden">
-      {/* Video Background */}
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="auto"
-        className="absolute inset-0 w-full h-full object-cover"
-      >
-        <source src="/videos/hero-background.mp4" type="video/mp4" />
-      </video>
-
-      {/* Dark Overlay for Text Readability */}
-      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-black/30" />
+      {/* Gradient Overlay for Hero Section */}
+      <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent" />
 
       <div className="container mx-auto px-6 relative z-10">
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">

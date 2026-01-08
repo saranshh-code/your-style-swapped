@@ -90,22 +90,22 @@ const Auth = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="w-6 h-6 animate-spin text-foreground" />
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-6 h-6 animate-spin text-white" />
       </div>
     );
   }
 
   return (
-    <main className="min-h-screen bg-background flex flex-col">
+    <main className="min-h-screen flex flex-col">
       {/* Header */}
-      <header className="border-b border-border">
+      <header className="border-b border-white/10 bg-black/40 backdrop-blur-md">
         <div className="container mx-auto px-6 h-18 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+          <Link to="/" className="flex items-center gap-2 text-white/70 hover:text-white transition-colors">
             <ArrowLeft className="w-4 h-4" />
             <span className="text-sm">Back</span>
           </Link>
-          <Link to="/" className="font-display text-xl text-foreground">
+          <Link to="/" className="font-display text-xl text-white">
             Swaps
           </Link>
           <div className="w-16" />
@@ -114,12 +114,12 @@ const Auth = () => {
 
       <div className="flex-1 flex items-center justify-center px-6 py-16">
         <div className="w-full max-w-sm">
-          <div className="space-y-8">
+          <div className="space-y-8 p-8 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10">
             <div className="text-center space-y-2">
-              <h1 className="font-display text-3xl text-foreground">
+              <h1 className="font-display text-3xl text-white">
                 {isLogin ? "Welcome back" : "Create account"}
               </h1>
-              <p className="text-muted-foreground text-sm">
+              <p className="text-white/70 text-sm">
                 {isLogin
                   ? "Sign in to access your designs and orders"
                   : "Join Swaps to save your designs and track orders"}
@@ -129,48 +129,48 @@ const Auth = () => {
             <form onSubmit={handleSubmit} className="space-y-5">
               {!isLogin && (
                 <div className="space-y-2">
-                  <Label htmlFor="fullName" className="text-sm font-medium">Full Name</Label>
+                  <Label htmlFor="fullName" className="text-sm font-medium text-white">Full Name</Label>
                   <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50" />
                     <Input
                       id="fullName"
                       type="text"
                       placeholder="John Doe"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
-                      className="pl-10 h-12 bg-background border-border"
+                      className="pl-10 h-12 bg-white/10 border-white/20 text-white placeholder:text-white/50"
                     />
                   </div>
                 </div>
               )}
 
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-sm font-medium">Email</Label>
+                <Label htmlFor="email" className="text-sm font-medium text-white">Email</Label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50" />
                   <Input
                     id="email"
                     type="email"
                     placeholder="you@example.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10 h-12 bg-background border-border"
+                    className="pl-10 h-12 bg-white/10 border-white/20 text-white placeholder:text-white/50"
                     required
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-sm font-medium">Password</Label>
+                <Label htmlFor="password" className="text-sm font-medium text-white">Password</Label>
                 <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/50" />
                   <Input
                     id="password"
                     type="password"
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 h-12 bg-background border-border"
+                    className="pl-10 h-12 bg-white/10 border-white/20 text-white placeholder:text-white/50"
                     required
                   />
                 </div>
@@ -198,12 +198,12 @@ const Auth = () => {
               <button
                 type="button"
                 onClick={() => setIsLogin(!isLogin)}
-                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                className="text-sm text-white/70 hover:text-white transition-colors"
               >
                 {isLogin ? (
-                  <>Don't have an account? <span className="font-medium text-foreground">Sign up</span></>
+                  <>Don't have an account? <span className="font-medium text-white">Sign up</span></>
                 ) : (
-                  <>Already have an account? <span className="font-medium text-foreground">Sign in</span></>
+                  <>Already have an account? <span className="font-medium text-white">Sign in</span></>
                 )}
               </button>
             </div>
