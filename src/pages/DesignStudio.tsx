@@ -174,30 +174,30 @@ const DesignStudio = () => {
   };
 
   return (
-    <main className="min-h-screen bg-background">
+    <main className="min-h-screen">
       {/* Header */}
-      <header className="border-b border-border bg-background sticky top-0 z-50">
+      <header className="border-b border-white/10 bg-black/40 backdrop-blur-md sticky top-0 z-50">
         <div className="container mx-auto px-6 h-18 flex items-center justify-between">
           <div className="flex items-center gap-6">
-            <Link to="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+            <Link to="/" className="flex items-center gap-2 text-white/70 hover:text-white transition-colors">
               <ArrowLeft className="w-4 h-4" />
               <span className="text-sm">Back</span>
             </Link>
-            <h1 className="font-display text-xl text-foreground">Design Studio</h1>
+            <h1 className="font-display text-xl text-white">Design Studio</h1>
           </div>
           <div className="flex items-center gap-4">
-            <Link to="/" className="font-display text-xl text-foreground">
+            <Link to="/" className="font-display text-xl text-white">
               Swaps
             </Link>
             {user ? (
               <Link
                 to="/dashboard"
-                className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+                className="flex items-center gap-2 text-white/70 hover:text-white transition-colors"
               >
                 <User className="w-4 h-4" />
               </Link>
             ) : (
-              <Button variant="ghost" size="sm" asChild>
+              <Button variant="ghost" size="sm" asChild className="text-white/70 hover:text-white hover:bg-white/10">
                 <Link to="/auth">Sign in</Link>
               </Button>
             )}
@@ -208,20 +208,20 @@ const DesignStudio = () => {
       <div className="container mx-auto px-6 py-12">
         <div className="grid lg:grid-cols-2 gap-16">
           {/* Left Panel - Controls */}
-          <div className="space-y-10">
+          <div className="space-y-10 p-8 rounded-2xl bg-white/10 backdrop-blur-md border border-white/10">
             <div>
-              <p className="text-sm tracking-[0.2em] uppercase text-muted-foreground mb-3">
+              <p className="text-sm tracking-[0.2em] uppercase text-white/60 mb-3">
                 AI Design Generator
               </p>
-              <h2 className="font-display text-3xl text-foreground mb-2">Create your design</h2>
-              <p className="text-muted-foreground text-sm">
+              <h2 className="font-display text-3xl text-white mb-2">Create your design</h2>
+              <p className="text-white/70 text-sm">
                 Describe your vision and our AI will create a custom mockup for you.
               </p>
             </div>
 
             {/* Product Type Selection */}
             <div className="space-y-4">
-              <label className="text-sm font-medium text-foreground">Product Type</label>
+              <label className="text-sm font-medium text-white">Product Type</label>
               <div className="flex gap-2">
                 {productOptions.map((option) => (
                   <button
@@ -229,8 +229,8 @@ const DesignStudio = () => {
                     onClick={() => setProductType(option.value)}
                     className={`px-5 py-2.5 rounded-md text-sm font-medium transition-all duration-200 ${
                       productType === option.value
-                        ? "bg-foreground text-background"
-                        : "bg-secondary text-muted-foreground hover:text-foreground"
+                        ? "bg-white text-black"
+                        : "bg-white/10 text-white/70 hover:text-white hover:bg-white/20"
                     }`}
                   >
                     {option.label}
@@ -241,7 +241,7 @@ const DesignStudio = () => {
 
             {/* Color Selection */}
             <div className="space-y-4">
-              <label className="text-sm font-medium text-foreground flex items-center gap-2">
+              <label className="text-sm font-medium text-white flex items-center gap-2">
                 <Palette className="w-4 h-4" />
                 Color
               </label>
@@ -252,25 +252,25 @@ const DesignStudio = () => {
                     onClick={() => setSelectedColor(color.value)}
                     className={`group relative w-10 h-10 rounded-full transition-all duration-200 ${
                       selectedColor === color.value
-                        ? "ring-2 ring-foreground ring-offset-2 ring-offset-background scale-110"
+                        ? "ring-2 ring-white ring-offset-2 ring-offset-transparent scale-110"
                         : "hover:scale-105"
                     }`}
                     style={{ 
                       backgroundColor: color.hex,
-                      border: color.value === 'white' || color.value === 'cream' ? '1px solid hsl(var(--border))' : 'none'
+                      border: color.value === 'white' || color.value === 'cream' ? '1px solid rgba(255,255,255,0.3)' : 'none'
                     }}
                     title={color.label}
                   />
                 ))}
               </div>
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-white/60">
                 Selected: <span className="capitalize">{selectedColor}</span>
               </p>
             </div>
 
             {/* Fabric Selection */}
             <div className="space-y-4">
-              <label className="text-sm font-medium text-foreground">Fabric</label>
+              <label className="text-sm font-medium text-white">Fabric</label>
               <div className="grid grid-cols-3 gap-3">
                 {fabricOptions.map((fabric) => (
                   <button
@@ -278,16 +278,16 @@ const DesignStudio = () => {
                     onClick={() => setFabricType(fabric.value)}
                     className={`p-4 rounded-lg border transition-all duration-200 text-left ${
                       fabricType === fabric.value
-                        ? "border-foreground bg-secondary"
-                        : "border-border bg-card hover:border-muted-foreground"
+                        ? "border-white bg-white/20"
+                        : "border-white/10 bg-white/5 hover:border-white/30"
                     }`}
                   >
                     <p className={`text-sm font-medium ${
-                      fabricType === fabric.value ? "text-foreground" : "text-muted-foreground"
+                      fabricType === fabric.value ? "text-white" : "text-white/70"
                     }`}>
                       {fabric.label}
                     </p>
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <p className="text-xs text-white/50 mt-1">
                       {fabric.description}
                     </p>
                   </button>
@@ -297,21 +297,21 @@ const DesignStudio = () => {
 
             {/* Prompt Input */}
             <div className="space-y-4">
-              <label className="text-sm font-medium text-foreground">Describe Your Design</label>
+              <label className="text-sm font-medium text-white">Describe Your Design</label>
               <Textarea
                 placeholder="Example: A vintage sunset with palm trees silhouette, retro 80s style with neon pink and orange gradients..."
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
-                className="min-h-[140px] bg-card border-border resize-none text-sm"
+                className="min-h-[140px] bg-white/10 border-white/20 text-white placeholder:text-white/50 resize-none text-sm"
               />
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-white/60">
                 Be specific about colors, style, and elements you want in your design.
               </p>
             </div>
 
             {/* Image Upload */}
             <div className="space-y-4">
-              <label className="text-sm font-medium text-foreground">Upload Logo or Inspiration</label>
+              <label className="text-sm font-medium text-white">Upload Logo or Inspiration</label>
               <input
                 type="file"
                 ref={fileInputRef}
@@ -321,9 +321,9 @@ const DesignStudio = () => {
               />
               
               {uploadedImage ? (
-                <div className="relative p-4 rounded-lg bg-card border border-border">
+                <div className="relative p-4 rounded-lg bg-white/10 border border-white/20">
                   <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-lg overflow-hidden bg-secondary flex-shrink-0">
+                    <div className="w-14 h-14 rounded-lg overflow-hidden bg-white/10 flex-shrink-0">
                       <img 
                         src={uploadedImage} 
                         alt="Uploaded" 
@@ -331,29 +331,29 @@ const DesignStudio = () => {
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-foreground truncate">{uploadedFileName}</p>
-                      <p className="text-xs text-muted-foreground">Ready to incorporate</p>
+                      <p className="text-sm text-white truncate">{uploadedFileName}</p>
+                      <p className="text-xs text-white/60">Ready to incorporate</p>
                     </div>
                     <button
                       onClick={removeUploadedImage}
-                      className="p-2 rounded-lg hover:bg-secondary transition-colors"
+                      className="p-2 rounded-lg hover:bg-white/10 transition-colors"
                     >
-                      <X className="w-4 h-4 text-muted-foreground" />
+                      <X className="w-4 h-4 text-white/60" />
                     </button>
                   </div>
                 </div>
               ) : (
                 <button
                   onClick={() => fileInputRef.current?.click()}
-                  className="w-full p-8 rounded-lg border border-dashed border-border hover:border-muted-foreground bg-card transition-colors group"
+                  className="w-full p-8 rounded-lg border border-dashed border-white/20 hover:border-white/40 bg-white/5 transition-colors group"
                 >
                   <div className="flex flex-col items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center">
-                      <Upload className="w-5 h-5 text-muted-foreground" />
+                    <div className="w-12 h-12 rounded-full bg-white/10 flex items-center justify-center">
+                      <Upload className="w-5 h-5 text-white/60" />
                     </div>
                     <div className="text-center">
-                      <p className="text-sm text-foreground">Click to upload</p>
-                      <p className="text-xs text-muted-foreground mt-1">PNG, JPG up to 5MB</p>
+                      <p className="text-sm text-white">Click to upload</p>
+                      <p className="text-xs text-white/60 mt-1">PNG, JPG up to 5MB</p>
                     </div>
                   </div>
                 </button>

@@ -23,26 +23,26 @@ const Footer = () => {
   };
 
   return (
-    <footer className="py-20 border-t border-border">
+    <footer className="py-20 border-t border-white/10 bg-black/40 backdrop-blur-sm">
       <div className="container mx-auto px-6">
         <div className="grid md:grid-cols-5 gap-12 mb-16">
           {/* Brand */}
           <div className="md:col-span-2">
-            <h3 className="font-display text-2xl text-foreground mb-4">Swaps</h3>
-            <p className="text-muted-foreground max-w-xs mb-6 text-sm leading-relaxed">
+            <h3 className="font-display text-2xl text-white mb-4">Swaps</h3>
+            <p className="text-white/70 max-w-xs mb-6 text-sm leading-relaxed">
               AI-powered custom apparel. From your imagination to your wardrobe, 
               crafted with precision.
             </p>
             <div className="flex gap-3">
               <a
                 href="#"
-                className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
+                className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white/70 hover:text-white hover:bg-white/20 transition-all duration-200"
               >
                 <Instagram className="w-4 h-4" />
               </a>
               <a
                 href="#"
-                className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-all duration-200"
+                className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white/70 hover:text-white hover:bg-white/20 transition-all duration-200"
               >
                 <Twitter className="w-4 h-4" />
               </a>
@@ -51,13 +51,13 @@ const Footer = () => {
 
           {/* Links */}
           <div>
-            <h4 className="text-sm font-medium text-foreground mb-4 tracking-wide">Product</h4>
+            <h4 className="text-sm font-medium text-white mb-4 tracking-wide">Product</h4>
             <ul className="space-y-3">
               {footerLinks.product.map((link) => (
                 <li key={link.label}>
                   <a
                     href={link.href}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    className="text-sm text-white/70 hover:text-white transition-colors"
                   >
                     {link.label}
                   </a>
@@ -67,13 +67,13 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="text-sm font-medium text-foreground mb-4 tracking-wide">Company</h4>
+            <h4 className="text-sm font-medium text-white mb-4 tracking-wide">Company</h4>
             <ul className="space-y-3">
               {footerLinks.company.map((link) => (
                 <li key={link.label}>
                   <a
                     href={link.href}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    className="text-sm text-white/70 hover:text-white transition-colors"
                   >
                     {link.label}
                   </a>
@@ -83,13 +83,13 @@ const Footer = () => {
           </div>
 
           <div>
-            <h4 className="text-sm font-medium text-foreground mb-4 tracking-wide">Support</h4>
+            <h4 className="text-sm font-medium text-white mb-4 tracking-wide">Support</h4>
             <ul className="space-y-3">
               {footerLinks.support.map((link) => (
                 <li key={link.label}>
                   <a
                     href={link.href}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    className="text-sm text-white/70 hover:text-white transition-colors"
                   >
                     {link.label}
                   </a>
@@ -100,15 +100,15 @@ const Footer = () => {
         </div>
 
         {/* Bottom */}
-        <div className="pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-muted-foreground">
+        <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-sm text-white/60">
             © 2024 Swaps. All rights reserved.
           </p>
-          <div className="flex gap-8 text-sm text-muted-foreground">
-            <a href="#" className="hover:text-foreground transition-colors">
+          <div className="flex gap-8 text-sm text-white/60">
+            <a href="#" className="hover:text-white transition-colors">
               Privacy Policy
             </a>
-            <a href="#" className="hover:text-foreground transition-colors">
+            <a href="#" className="hover:text-white transition-colors">
               Terms of Service
             </a>
           </div>
