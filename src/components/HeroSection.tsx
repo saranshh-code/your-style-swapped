@@ -2,10 +2,8 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import hoodieImage from "@/assets/hoodie-hero.png";
-
 const HeroSection = () => {
-  return (
-    <section className="relative min-h-screen flex items-center justify-center pt-24 pb-20 overflow-hidden">
+  return <section className="relative min-h-screen flex items-center justify-center pt-24 pb-20 overflow-hidden">
       {/* Gradient Overlay for Hero Section */}
       <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent" />
 
@@ -66,11 +64,7 @@ const HeroSection = () => {
             <div className="relative">
               <div className="absolute inset-0 bg-white/5 backdrop-blur-sm rounded-3xl -rotate-3 scale-95" />
               <div className="relative bg-white/10 backdrop-blur-md rounded-2xl p-12 border border-white/10">
-                <img
-                  src={hoodieImage}
-                  alt="Custom hoodie mockup"
-                  className="relative z-10 w-full max-w-[420px] animate-float drop-shadow-2xl"
-                />
+                <img alt="Custom hoodie mockup" className="relative z-10 w-full max-w-[420px] animate-float drop-shadow-2xl" src="/lovable-uploads/10ad7f5f-4a09-4d2b-aebb-ec1613a8826e.png" />
               </div>
             </div>
           </div>
@@ -82,8 +76,6 @@ const HeroSection = () => {
         <span className="text-xs text-white/50 tracking-widest uppercase">Scroll</span>
         <div className="w-px h-8 bg-gradient-to-b from-white/50 to-transparent" />
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default HeroSection;
