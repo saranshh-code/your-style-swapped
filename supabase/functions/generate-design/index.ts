@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { prompt, productType, fabricType, color, referenceImage } = await req.json();
+    const { prompt, productType, fabricType, color, referenceImage, variationCount = 4 } = await req.json();
     
     if (!prompt) {
       return new Response(
@@ -37,112 +37,185 @@ serve(async (req) => {
     
     // Map fabric types to descriptive textures
     const fabricDescriptions: Record<string, string> = {
-      cotton: 'soft cotton fabric with natural texture',
-      polyester: 'smooth polyester fabric with slight sheen',
-      nylon: 'lightweight nylon fabric with sleek finish',
-      wool: 'warm woolen fabric with cozy texture',
-      fleece: 'plush fleece fabric with soft fuzzy texture',
-      linen: 'natural linen fabric with elegant drape'
+      cotton: 'soft premium cotton fabric with natural organic texture and comfortable feel',
+      polyester: 'smooth high-performance polyester fabric with athletic sheen and moisture-wicking properties',
+      nylon: 'lightweight durable nylon fabric with sleek modern finish and water-resistant coating',
+      wool: 'luxurious warm woolen fabric with cozy texture and premium hand-feel',
+      fleece: 'ultra-soft plush fleece fabric with fuzzy texture and exceptional warmth',
+      linen: 'breathable natural linen fabric with elegant drape and sophisticated texture'
     };
     
     const fabricDesc = fabricDescriptions[fabricContext] || 'premium fabric';
-    
-    let enhancedPrompt: string;
-    if (referenceImage) {
-      enhancedPrompt = `Create a professional product mockup of a ${colorContext} colored ${productContext} made from ${fabricDesc}, incorporating the uploaded image/logo into the design. 
-      Additional instructions: ${prompt}. 
-      The mockup should be photorealistic, studio lighting, floating on a dark background, premium quality apparel photography. 
-      The fabric texture should be clearly visible showing the ${fabricContext} material. The garment color must be ${colorContext}.
-      Show the garment from the front view with the design/logo clearly visible on the chest area.`;
-    } else {
-      enhancedPrompt = `Create a professional product mockup of a ${colorContext} colored ${productContext} made from ${fabricDesc} with this design: ${prompt}. 
-      The mockup should be photorealistic, studio lighting, floating on a dark background, premium quality apparel photography. 
-      The fabric texture should be clearly visible showing the ${fabricContext} material. The garment color must be ${colorContext}.
-      Show the garment from the front view with the design clearly visible.`;
-    }
 
-    console.log('Generating design with prompt:', enhancedPrompt);
+    // Design style variations for variety
+    const styleVariations = [
+      { style: 'clean minimalist', emphasis: 'elegant simplicity with refined details and subtle sophistication' },
+      { style: 'bold artistic', emphasis: 'vibrant expressive elements with creative flair and eye-catching composition' },
+      { style: 'intricate detailed', emphasis: 'complex patterns with meticulous craftsmanship and fine artistry' },
+      { style: 'modern contemporary', emphasis: 'trendy current aesthetics with fresh innovative approach' },
+      { style: 'vintage retro', emphasis: 'classic nostalgic charm with timeless appeal and heritage feel' },
+    ];
+
+    // Limit variations
+    const numVariations = Math.min(Math.max(variationCount, 1), 5);
+    const selectedStyles = styleVariations.slice(0, numVariations);
+
+    console.log(`Generating ${numVariations} design variations for prompt:`, prompt);
     console.log('Reference image provided:', !!referenceImage);
 
-    // Build the message content
-    const messageContent: Array<{ type: string; text?: string; image_url?: { url: string } }> = [];
-    
-    // Add the text prompt
-    messageContent.push({
-      type: 'text',
-      text: enhancedPrompt
-    });
-    
-    // Add reference image if provided
-    if (referenceImage) {
+    // Generate multiple designs in parallel
+    const generateDesign = async (styleVariation: { style: string; emphasis: string }, index: number) => {
+      let enhancedPrompt: string;
+      
+      if (referenceImage) {
+        enhancedPrompt = `Create an EXTRAORDINARY, STATE-OF-THE-ART professional product mockup of a ${colorContext} colored ${productContext} made from ${fabricDesc}.
+        
+DESIGN STYLE: ${styleVariation.style} - ${styleVariation.emphasis}
+
+CUSTOMER VISION: ${prompt}
+
+CRITICAL REQUIREMENTS:
+- Incorporate the uploaded image/logo SEAMLESSLY into the design with artistic integration
+- The design must be VISUALLY STUNNING and PREMIUM quality that exceeds customer expectations
+- Show INTRICATE details, sharp lines, and professional craftsmanship
+- Create a design that customers will be PROUD to wear and show off
+- The artwork should be perfectly placed on the chest/front area with proper scaling
+- Add subtle artistic enhancements that complement the main design
+
+TECHNICAL SPECS:
+- Photorealistic studio quality photography with professional lighting
+- Dark gradient background that makes the garment POP
+- Clear visibility of ${fabricContext} fabric texture with realistic material properties
+- The garment color must be accurately ${colorContext}
+- Front view with the design as the focal point
+- Ultra high resolution, magazine-worthy quality`;
+      } else {
+        enhancedPrompt = `Create an EXTRAORDINARY, STATE-OF-THE-ART professional product mockup of a ${colorContext} colored ${productContext} made from ${fabricDesc}.
+
+DESIGN STYLE: ${styleVariation.style} - ${styleVariation.emphasis}
+
+CUSTOMER VISION: ${prompt}
+
+CRITICAL REQUIREMENTS:
+- Design must be VISUALLY STUNNING, INTRICATE, and UNIQUE
+- Create artwork that tells a story and connects emotionally with customers
+- Show EXCEPTIONAL attention to detail with professional artistry
+- The design should be something customers will be EXCITED to wear
+- Perfect composition and placement on the garment
+- Add complementary design elements that enhance the main concept
+
+TECHNICAL SPECS:
+- Photorealistic studio quality photography with professional lighting setup
+- Dark gradient background that makes the garment stand out dramatically
+- Clear visibility of ${fabricContext} fabric texture with realistic material properties
+- The garment color must be accurately ${colorContext}
+- Front view with the design as the hero element
+- Ultra high resolution, editorial/magazine-worthy quality
+- Premium apparel photography aesthetic`;
+      }
+
+      // Build the message content
+      const messageContent: Array<{ type: string; text?: string; image_url?: { url: string } }> = [];
+      
       messageContent.push({
-        type: 'image_url',
-        image_url: {
-          url: referenceImage
-        }
+        type: 'text',
+        text: enhancedPrompt
       });
-    }
-
-    const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${LOVABLE_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'google/gemini-2.5-flash-image-preview',
-        messages: [
-          {
-            role: 'user',
-            content: referenceImage ? messageContent : enhancedPrompt
+      
+      if (referenceImage) {
+        messageContent.push({
+          type: 'image_url',
+          image_url: {
+            url: referenceImage
           }
-        ],
-        modalities: ['image', 'text']
-      }),
-    });
+        });
+      }
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('AI Gateway error:', response.status, errorText);
-      
-      if (response.status === 429) {
+      const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'google/gemini-2.5-flash-image-preview',
+          messages: [
+            {
+              role: 'user',
+              content: referenceImage ? messageContent : enhancedPrompt
+            }
+          ],
+          modalities: ['image', 'text']
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(`AI Gateway error for variation ${index + 1}:`, response.status, errorText);
+        
+        if (response.status === 429) {
+          throw { status: 429, message: 'Rate limit exceeded. Please try again in a moment.' };
+        }
+        if (response.status === 402) {
+          throw { status: 402, message: 'AI credits exhausted. Please add credits to continue.' };
+        }
+        
+        throw { status: 500, message: 'Failed to generate design variation' };
+      }
+
+      const data = await response.json();
+      const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+      const textResponse = data.choices?.[0]?.message?.content;
+
+      if (!imageUrl) {
+        console.error(`No image in response for variation ${index + 1}:`, JSON.stringify(data));
+        return null;
+      }
+
+      return {
+        imageUrl,
+        style: styleVariation.style,
+        description: textResponse || `${styleVariation.style} design variation`
+      };
+    };
+
+    // Generate all variations in parallel
+    const results = await Promise.allSettled(
+      selectedStyles.map((style, index) => generateDesign(style, index))
+    );
+
+    // Process results
+    const designs: Array<{ imageUrl: string; style: string; description: string }> = [];
+    let firstError: { status: number; message: string } | null = null;
+
+    for (const result of results) {
+      if (result.status === 'fulfilled' && result.value) {
+        designs.push(result.value);
+      } else if (result.status === 'rejected' && !firstError) {
+        firstError = result.reason;
+      }
+    }
+
+    // If no designs were generated, return the error
+    if (designs.length === 0) {
+      if (firstError) {
         return new Response(
-          JSON.stringify({ error: 'Rate limit exceeded. Please try again in a moment.' }),
-          { status: 429, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          JSON.stringify({ error: firstError.message }),
+          { status: firstError.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
-      if (response.status === 402) {
-        return new Response(
-          JSON.stringify({ error: 'AI credits exhausted. Please add credits to continue.' }),
-          { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-        );
-      }
-      
       return new Response(
-        JSON.stringify({ error: 'Failed to generate design' }),
+        JSON.stringify({ error: 'No designs were generated. Please try a different prompt.' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    const data = await response.json();
-    console.log('AI response received');
-
-    // Extract the generated image from the response
-    const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-    const textResponse = data.choices?.[0]?.message?.content;
-
-    if (!imageUrl) {
-      console.error('No image in response:', JSON.stringify(data));
-      return new Response(
-        JSON.stringify({ error: 'No image was generated. Please try a different prompt.' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
+    console.log(`Successfully generated ${designs.length} design variations`);
 
     return new Response(
       JSON.stringify({ 
-        imageUrl,
-        description: textResponse || 'Design generated successfully'
+        designs,
+        count: designs.length
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
