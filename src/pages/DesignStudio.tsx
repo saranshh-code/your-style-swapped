@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Sparkles, Loader2, Download, RefreshCw, Upload, X, Palette, Save, User } from "lucide-react";
+import { ArrowLeft, Sparkles, Loader2, Download, RefreshCw, Upload, X, Palette, Save, User, Check } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,6 +9,12 @@ import { useAuth } from "@/hooks/useAuth";
 
 type ProductType = "hoodie" | "tshirt" | "crewneck";
 type FabricType = "cotton" | "polyester" | "nylon" | "wool" | "fleece" | "linen";
+
+interface GeneratedDesign {
+  imageUrl: string;
+  style: string;
+  description: string;
+}
 
 const productOptions: { value: ProductType; label: string }[] = [
   { value: "hoodie", label: "Hoodie" },
@@ -43,11 +49,14 @@ const DesignStudio = () => {
   const [selectedColor, setSelectedColor] = useState("black");
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+  const [generatedDesigns, setGeneratedDesigns] = useState<GeneratedDesign[]>([]);
+  const [selectedDesignIndex, setSelectedDesignIndex] = useState<number>(0);
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [uploadedFileName, setUploadedFileName] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { user } = useAuth();
+
+  const selectedDesign = generatedDesigns[selectedDesignIndex] || null;
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -88,7 +97,8 @@ const DesignStudio = () => {
     }
 
     setIsGenerating(true);
-    setGeneratedImage(null);
+    setGeneratedDesigns([]);
+    setSelectedDesignIndex(0);
 
     try {
       const { data, error } = await supabase.functions.invoke("generate-design", {
@@ -97,13 +107,14 @@ const DesignStudio = () => {
           productType, 
           fabricType, 
           color: selectedColor,
-          referenceImage: uploadedImage 
+          referenceImage: uploadedImage,
+          variationCount: 4
         },
       });
 
       if (error) {
         console.error("Function error:", error);
-        toast.error(error.message || "Failed to generate design");
+        toast.error(error.message || "Failed to generate designs");
         return;
       }
 
@@ -112,11 +123,11 @@ const DesignStudio = () => {
         return;
       }
 
-      if (data?.imageUrl) {
-        setGeneratedImage(data.imageUrl);
-        toast.success("Design generated successfully!");
+      if (data?.designs && data.designs.length > 0) {
+        setGeneratedDesigns(data.designs);
+        toast.success(`Generated ${data.designs.length} unique designs for you!`);
       } else {
-        toast.error("No image was generated. Try a different prompt.");
+        toast.error("No designs were generated. Try a different prompt.");
       }
     } catch (err) {
       console.error("Error:", err);
@@ -132,7 +143,7 @@ const DesignStudio = () => {
       return;
     }
 
-    if (!generatedImage) {
+    if (!selectedDesign) {
       toast.error("No design to save");
       return;
     }
@@ -147,7 +158,7 @@ const DesignStudio = () => {
         product_type: productType,
         fabric_type: fabricType,
         color: selectedColor,
-        generated_image_url: generatedImage,
+        generated_image_url: selectedDesign.imageUrl,
       });
 
       if (error) throw error;
@@ -162,11 +173,11 @@ const DesignStudio = () => {
   };
 
   const handleDownload = () => {
-    if (!generatedImage) return;
+    if (!selectedDesign) return;
     
     const link = document.createElement("a");
-    link.href = generatedImage;
-    link.download = `swaps-design-${Date.now()}.png`;
+    link.href = selectedDesign.imageUrl;
+    link.download = `swaps-design-${selectedDesign.style.replace(/\s+/g, '-')}-${Date.now()}.png`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -213,15 +224,15 @@ const DesignStudio = () => {
               <p className="text-sm tracking-[0.2em] uppercase text-white/60 mb-3">
                 AI Design Generator
               </p>
-              <h2 className="font-display text-3xl text-white mb-2">Create your design</h2>
+              <h2 className="font-display text-3xl text-white mb-2">Start Creating</h2>
               <p className="text-white/70 text-sm">
-                Describe your vision and our AI will create a custom mockup for you.
+                Choose your product, color, fabric & describe your vision. We'll generate 4 unique designs for you to choose from.
               </p>
             </div>
 
             {/* Product Type Selection */}
             <div className="space-y-4">
-              <label className="text-sm font-medium text-white">Product Type</label>
+              <label className="text-sm font-medium text-white">Choose Your Product</label>
               <div className="flex gap-2">
                 {productOptions.map((option) => (
                   <button
@@ -243,7 +254,7 @@ const DesignStudio = () => {
             <div className="space-y-4">
               <label className="text-sm font-medium text-white flex items-center gap-2">
                 <Palette className="w-4 h-4" />
-                Color
+                Choose Your Color
               </label>
               <div className="flex flex-wrap gap-3">
                 {colorOptions.map((color) => (
@@ -264,13 +275,13 @@ const DesignStudio = () => {
                 ))}
               </div>
               <p className="text-xs text-white/60">
-                Selected: <span className="capitalize">{selectedColor}</span>
+                Selected: <span className="capitalize font-medium text-white">{selectedColor}</span>
               </p>
             </div>
 
             {/* Fabric Selection */}
             <div className="space-y-4">
-              <label className="text-sm font-medium text-white">Fabric</label>
+              <label className="text-sm font-medium text-white">Choose Your Fabric</label>
               <div className="grid grid-cols-3 gap-3">
                 {fabricOptions.map((fabric) => (
                   <button
@@ -297,21 +308,21 @@ const DesignStudio = () => {
 
             {/* Prompt Input */}
             <div className="space-y-4">
-              <label className="text-sm font-medium text-white">Describe Your Design</label>
+              <label className="text-sm font-medium text-white">Describe Your Design Vision</label>
               <Textarea
-                placeholder="Example: A vintage sunset with palm trees silhouette, retro 80s style with neon pink and orange gradients..."
+                placeholder="Example: A majestic wolf howling at the moon with intricate tribal patterns, aurora borealis in the background..."
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 className="min-h-[140px] bg-white/10 border-white/20 text-white placeholder:text-white/50 resize-none text-sm"
               />
               <p className="text-xs text-white/60">
-                Be specific about colors, style, and elements you want in your design.
+                Be detailed! The more specific you are, the more stunning your designs will be.
               </p>
             </div>
 
             {/* Image Upload */}
             <div className="space-y-4">
-              <label className="text-sm font-medium text-white">Upload Logo or Inspiration</label>
+              <label className="text-sm font-medium text-white">Upload Logo or Inspiration (Optional)</label>
               <input
                 type="file"
                 ref={fileInputRef}
@@ -371,30 +382,30 @@ const DesignStudio = () => {
               {isGenerating ? (
                 <>
                   <Loader2 className="w-5 h-5 animate-spin" />
-                  Generating...
+                  Generating 4 Unique Designs...
                 </>
               ) : (
                 <>
                   <Sparkles className="w-5 h-5" />
-                  Generate design
+                  Generate 4 Designs
                 </>
               )}
             </Button>
 
             {/* Example Prompts */}
             <div className="space-y-3">
-              <p className="text-sm text-muted-foreground">Try these ideas:</p>
+              <p className="text-sm text-white/60">Need inspiration? Try these:</p>
               <div className="flex flex-wrap gap-2">
                 {[
-                  "Minimalist mountain landscape",
-                  "Japanese wave art style",
-                  "Geometric abstract pattern",
-                  "Vintage car illustration",
+                  "Majestic mountain sunset with geometric patterns",
+                  "Japanese koi fish with cherry blossoms",
+                  "Abstract cosmic galaxy with planets",
+                  "Vintage motorcycle with flames",
                 ].map((example) => (
                   <button
                     key={example}
                     onClick={() => setPrompt(example)}
-                    className="px-3 py-1.5 rounded-md bg-secondary text-xs text-muted-foreground hover:text-foreground transition-colors"
+                    className="px-3 py-1.5 rounded-md bg-white/10 text-xs text-white/70 hover:text-white hover:bg-white/20 transition-colors"
                   >
                     {example}
                   </button>
@@ -405,34 +416,80 @@ const DesignStudio = () => {
 
           {/* Right Panel - Preview */}
           <div className="space-y-6">
-            <p className="text-sm tracking-[0.2em] uppercase text-muted-foreground">Preview</p>
+            <p className="text-sm tracking-[0.2em] uppercase text-white/60">Your Design Options</p>
             
-            <div className="relative aspect-square rounded-xl bg-secondary/30 border border-border overflow-hidden">
+            {/* Main Preview */}
+            <div className="relative aspect-square rounded-xl bg-white/5 backdrop-blur-sm border border-white/10 overflow-hidden">
               {isGenerating ? (
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-4">
-                  <Loader2 className="w-8 h-8 animate-spin text-foreground" />
-                  <p className="text-muted-foreground text-sm">Creating your design...</p>
+                  <div className="relative">
+                    <Loader2 className="w-12 h-12 animate-spin text-white" />
+                    <Sparkles className="w-5 h-5 text-white/60 absolute -top-1 -right-1 animate-pulse" />
+                  </div>
+                  <div className="text-center">
+                    <p className="text-white font-medium">Creating your designs...</p>
+                    <p className="text-white/60 text-sm mt-1">Our AI is crafting 4 unique variations</p>
+                  </div>
                 </div>
-              ) : generatedImage ? (
-                <img
-                  src={generatedImage}
-                  alt="Generated design mockup"
-                  className="absolute inset-0 w-full h-full object-contain p-4"
-                />
+              ) : selectedDesign ? (
+                <>
+                  <img
+                    src={selectedDesign.imageUrl}
+                    alt={`Generated design - ${selectedDesign.style}`}
+                    className="absolute inset-0 w-full h-full object-contain p-4"
+                  />
+                  <div className="absolute bottom-4 left-4 right-4 p-3 rounded-lg bg-black/60 backdrop-blur-sm">
+                    <p className="text-sm text-white font-medium capitalize">{selectedDesign.style} Style</p>
+                  </div>
+                </>
               ) : (
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-8">
-                  <div className="w-20 h-20 rounded-xl bg-secondary flex items-center justify-center">
-                    <Sparkles className="w-8 h-8 text-muted-foreground" />
+                  <div className="w-20 h-20 rounded-xl bg-white/10 flex items-center justify-center">
+                    <Sparkles className="w-8 h-8 text-white/40" />
                   </div>
-                  <p className="text-center text-muted-foreground text-sm">
-                    Your AI-generated design will appear here
+                  <p className="text-center text-white/60 text-sm">
+                    Your AI-generated designs will appear here
                   </p>
                 </div>
               )}
             </div>
 
+            {/* Design Variations Grid */}
+            {generatedDesigns.length > 0 && (
+              <div className="space-y-3">
+                <p className="text-sm text-white/60">Click to select a design variation:</p>
+                <div className="grid grid-cols-4 gap-3">
+                  {generatedDesigns.map((design, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setSelectedDesignIndex(index)}
+                      className={`relative aspect-square rounded-lg overflow-hidden border-2 transition-all duration-200 ${
+                        selectedDesignIndex === index
+                          ? "border-white scale-105 shadow-lg shadow-white/20"
+                          : "border-white/20 hover:border-white/50"
+                      }`}
+                    >
+                      <img
+                        src={design.imageUrl}
+                        alt={`Design option ${index + 1} - ${design.style}`}
+                        className="w-full h-full object-cover"
+                      />
+                      {selectedDesignIndex === index && (
+                        <div className="absolute top-1 right-1 w-5 h-5 rounded-full bg-white flex items-center justify-center">
+                          <Check className="w-3 h-3 text-black" />
+                        </div>
+                      )}
+                      <div className="absolute bottom-0 left-0 right-0 p-1 bg-black/60 backdrop-blur-sm">
+                        <p className="text-[10px] text-white truncate capitalize">{design.style}</p>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Action Buttons */}
-            {generatedImage && (
+            {selectedDesign && (
               <div className="flex gap-3">
                 <Button
                   variant="heroOutline"
@@ -442,7 +499,7 @@ const DesignStudio = () => {
                   disabled={isGenerating}
                 >
                   <RefreshCw className="w-4 h-4" />
-                  Regenerate
+                  New Designs
                 </Button>
                 <Button
                   variant="heroOutline"
@@ -470,9 +527,9 @@ const DesignStudio = () => {
               </div>
             )}
 
-            {generatedImage && (
-              <div className="p-6 rounded-xl bg-card border border-border">
-                <p className="text-sm text-muted-foreground">
+            {selectedDesign && (
+              <div className="p-6 rounded-xl bg-white/10 backdrop-blur-sm border border-white/10">
+                <p className="text-sm text-white/70">
                   Love your design? We can produce this on premium apparel and ship it to you within 48 hours.
                 </p>
                 <Button variant="hero" size="lg" className="w-full mt-4">
