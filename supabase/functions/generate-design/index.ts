@@ -30,10 +30,13 @@ serve(async (req) => {
       );
     }
 
-    // Create a detailed prompt for clothing design
-    const productContext = productType || 'hoodie';
-    const fabricContext = fabricType || 'cotton';
-    const colorContext = color || 'black';
+    // Handle "custom" options - let the prompt define everything
+    const isCustomProduct = !productType || productType === 'custom';
+    const isCustomFabric = !fabricType || fabricType === 'custom';
+    const isCustomColor = !color || color === 'custom';
+    
+    const productContext = isCustomProduct ? 'apparel/clothing item' : productType;
+    const colorContext = isCustomColor ? 'any color as described in the prompt' : color;
     
     // Map fabric types to descriptive textures
     const fabricDescriptions: Record<string, string> = {
@@ -42,10 +45,11 @@ serve(async (req) => {
       nylon: 'lightweight durable nylon fabric with sleek modern finish and water-resistant coating',
       wool: 'luxurious warm woolen fabric with cozy texture and premium hand-feel',
       fleece: 'ultra-soft plush fleece fabric with fuzzy texture and exceptional warmth',
-      linen: 'breathable natural linen fabric with elegant drape and sophisticated texture'
+      linen: 'breathable natural linen fabric with elegant drape and sophisticated texture',
+      custom: 'premium fabric as specified in the customer\'s description'
     };
     
-    const fabricDesc = fabricDescriptions[fabricContext] || 'premium fabric';
+    const fabricDesc = isCustomFabric ? 'appropriate premium fabric as described by customer' : (fabricDescriptions[fabricType] || 'premium fabric');
 
     // Design style variations for variety
     const styleVariations = [
@@ -68,11 +72,13 @@ serve(async (req) => {
       let enhancedPrompt: string;
       
       if (referenceImage) {
-        enhancedPrompt = `Create an EXTRAORDINARY, STATE-OF-THE-ART professional product mockup of a ${colorContext} colored ${productContext} made from ${fabricDesc}.
+        enhancedPrompt = `Create an EXTRAORDINARY, STATE-OF-THE-ART professional product mockup of ${isCustomColor ? 'a' : `a ${colorContext} colored`} ${productContext} ${isCustomFabric ? '' : `made from ${fabricDesc}`}.
         
 DESIGN STYLE: ${styleVariation.style} - ${styleVariation.emphasis}
 
-CUSTOMER VISION: ${prompt}
+CUSTOMER VISION (FOLLOW THIS EXACTLY): ${prompt}
+
+${isCustomProduct || isCustomColor || isCustomFabric ? 'NOTE: Customer has chosen "No Choice" for some options - interpret their prompt fully to determine product type, color, and/or fabric as they describe.' : ''}
 
 CRITICAL REQUIREMENTS:
 - Incorporate the uploaded image/logo SEAMLESSLY into the design with artistic integration
@@ -85,16 +91,17 @@ CRITICAL REQUIREMENTS:
 TECHNICAL SPECS:
 - Photorealistic studio quality photography with professional lighting
 - Dark gradient background that makes the garment POP
-- Clear visibility of ${fabricContext} fabric texture with realistic material properties
-- The garment color must be accurately ${colorContext}
+- Clear visibility of fabric texture with realistic material properties
 - Front view with the design as the focal point
 - Ultra high resolution, magazine-worthy quality`;
       } else {
-        enhancedPrompt = `Create an EXTRAORDINARY, STATE-OF-THE-ART professional product mockup of a ${colorContext} colored ${productContext} made from ${fabricDesc}.
+        enhancedPrompt = `Create an EXTRAORDINARY, STATE-OF-THE-ART professional product mockup of ${isCustomColor ? 'a' : `a ${colorContext} colored`} ${productContext} ${isCustomFabric ? '' : `made from ${fabricDesc}`}.
 
 DESIGN STYLE: ${styleVariation.style} - ${styleVariation.emphasis}
 
-CUSTOMER VISION: ${prompt}
+CUSTOMER VISION (FOLLOW THIS EXACTLY): ${prompt}
+
+${isCustomProduct || isCustomColor || isCustomFabric ? 'NOTE: Customer has chosen "No Choice" for some options - interpret their prompt fully to determine product type, color, and/or fabric as they describe.' : ''}
 
 CRITICAL REQUIREMENTS:
 - Design must be VISUALLY STUNNING, INTRICATE, and UNIQUE
@@ -107,8 +114,7 @@ CRITICAL REQUIREMENTS:
 TECHNICAL SPECS:
 - Photorealistic studio quality photography with professional lighting setup
 - Dark gradient background that makes the garment stand out dramatically
-- Clear visibility of ${fabricContext} fabric texture with realistic material properties
-- The garment color must be accurately ${colorContext}
+- Clear visibility of fabric texture with realistic material properties
 - Front view with the design as the hero element
 - Ultra high resolution, editorial/magazine-worthy quality
 - Premium apparel photography aesthetic`;

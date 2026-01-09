@@ -7,8 +7,9 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
-type ProductType = "hoodie" | "tshirt" | "crewneck";
-type FabricType = "cotton" | "polyester" | "nylon" | "wool" | "fleece" | "linen";
+type ProductType = "hoodie" | "tshirt" | "crewneck" | "custom";
+type FabricType = "cotton" | "polyester" | "nylon" | "wool" | "fleece" | "linen" | "custom";
+type ColorType = string;
 
 interface GeneratedDesign {
   imageUrl: string;
@@ -17,12 +18,14 @@ interface GeneratedDesign {
 }
 
 const productOptions: { value: ProductType; label: string }[] = [
+  { value: "custom", label: "No Choice (Custom)" },
   { value: "hoodie", label: "Hoodie" },
   { value: "tshirt", label: "T-Shirt" },
   { value: "crewneck", label: "Crewneck" },
 ];
 
 const fabricOptions: { value: FabricType; label: string; description: string }[] = [
+  { value: "custom", label: "No Choice", description: "Describe in prompt" },
   { value: "cotton", label: "Cotton", description: "Soft & breathable" },
   { value: "polyester", label: "Polyester", description: "Durable & quick-dry" },
   { value: "nylon", label: "Nylon", description: "Lightweight & strong" },
@@ -32,21 +35,22 @@ const fabricOptions: { value: FabricType; label: string; description: string }[]
 ];
 
 const colorOptions = [
-  { value: "black", label: "Black", hex: "#1a1a1a" },
-  { value: "white", label: "White", hex: "#ffffff" },
-  { value: "navy", label: "Navy", hex: "#1e3a5f" },
-  { value: "gray", label: "Gray", hex: "#6b7280" },
-  { value: "red", label: "Red", hex: "#dc2626" },
-  { value: "forest", label: "Forest", hex: "#166534" },
-  { value: "burgundy", label: "Burgundy", hex: "#7f1d1d" },
-  { value: "cream", label: "Cream", hex: "#fef3c7" },
+  { value: "custom", label: "No Choice", hex: "linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%)", isGradient: true },
+  { value: "black", label: "Black", hex: "#1a1a1a", isGradient: false },
+  { value: "white", label: "White", hex: "#ffffff", isGradient: false },
+  { value: "navy", label: "Navy", hex: "#1e3a5f", isGradient: false },
+  { value: "gray", label: "Gray", hex: "#6b7280", isGradient: false },
+  { value: "red", label: "Red", hex: "#dc2626", isGradient: false },
+  { value: "forest", label: "Forest", hex: "#166534", isGradient: false },
+  { value: "burgundy", label: "Burgundy", hex: "#7f1d1d", isGradient: false },
+  { value: "cream", label: "Cream", hex: "#fef3c7", isGradient: false },
 ];
 
 const DesignStudio = () => {
   const [prompt, setPrompt] = useState("");
-  const [productType, setProductType] = useState<ProductType>("hoodie");
-  const [fabricType, setFabricType] = useState<FabricType>("cotton");
-  const [selectedColor, setSelectedColor] = useState("black");
+  const [productType, setProductType] = useState<ProductType>("custom");
+  const [fabricType, setFabricType] = useState<FabricType>("custom");
+  const [selectedColor, setSelectedColor] = useState<ColorType>("custom");
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [generatedDesigns, setGeneratedDesigns] = useState<GeneratedDesign[]>([]);
@@ -226,7 +230,7 @@ const DesignStudio = () => {
               </p>
               <h2 className="font-display text-3xl text-white mb-2">Start Creating</h2>
               <p className="text-white/70 text-sm">
-                Choose your product, color, fabric & describe your vision. We'll generate 4 unique designs for you to choose from.
+                Choose your product, color, fabric or select "No Choice" to customize everything in your prompt. We'll generate 4 unique designs for you to choose from.
               </p>
             </div>
 
@@ -267,15 +271,17 @@ const DesignStudio = () => {
                         : "hover:scale-105"
                     }`}
                     style={{ 
-                      backgroundColor: color.hex,
+                      background: color.isGradient ? color.hex : color.hex,
                       border: color.value === 'white' || color.value === 'cream' ? '1px solid rgba(255,255,255,0.3)' : 'none'
                     }}
-                    title={color.label}
+                    title={color.value === 'custom' ? 'No Choice - Describe in prompt' : color.label}
                   />
                 ))}
               </div>
               <p className="text-xs text-white/60">
-                Selected: <span className="capitalize font-medium text-white">{selectedColor}</span>
+                Selected: <span className="capitalize font-medium text-white">
+                  {selectedColor === 'custom' ? 'No Choice (describe in prompt)' : selectedColor}
+                </span>
               </p>
             </div>
 
