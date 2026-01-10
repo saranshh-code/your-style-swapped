@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { prompt, productType, fabricType, color, referenceImage, variationCount = 4 } = await req.json();
+    const { prompt, productType, fabricType, color, printSide = 'front', referenceImage, variationCount = 4 } = await req.json();
     
     if (!prompt) {
       return new Response(
@@ -37,6 +37,13 @@ serve(async (req) => {
     
     const productContext = isCustomProduct ? 'apparel/clothing item' : productType;
     const colorContext = isCustomColor ? 'any color as described in the prompt' : color;
+    
+    // Print side context
+    const printSideContext = printSide === 'both' 
+      ? 'BOTH FRONT AND BACK of the garment (show both sides or indicate dual-sided design)'
+      : printSide === 'back' 
+        ? 'the BACK of the garment'
+        : 'the FRONT of the garment';
     
     // Map fabric types to descriptive textures
     const fabricDescriptions: Record<string, string> = {
@@ -64,7 +71,7 @@ serve(async (req) => {
     const numVariations = Math.min(Math.max(variationCount, 1), 5);
     const selectedStyles = styleVariations.slice(0, numVariations);
 
-    console.log(`Generating ${numVariations} design variations for prompt:`, prompt);
+    console.log(`Generating ${numVariations} design variations for prompt:`, prompt, 'Print side:', printSide);
     console.log('Reference image provided:', !!referenceImage);
 
     // Generate multiple designs in parallel
@@ -78,6 +85,8 @@ DESIGN STYLE: ${styleVariation.style} - ${styleVariation.emphasis}
 
 CUSTOMER VISION (FOLLOW THIS EXACTLY): ${prompt}
 
+PRINT LOCATION: Design should be placed on ${printSideContext}
+
 ${isCustomProduct || isCustomColor || isCustomFabric ? 'NOTE: Customer has chosen "No Choice" for some options - interpret their prompt fully to determine product type, color, and/or fabric as they describe.' : ''}
 
 CRITICAL REQUIREMENTS:
@@ -85,14 +94,14 @@ CRITICAL REQUIREMENTS:
 - The design must be VISUALLY STUNNING and PREMIUM quality that exceeds customer expectations
 - Show INTRICATE details, sharp lines, and professional craftsmanship
 - Create a design that customers will be PROUD to wear and show off
-- The artwork should be perfectly placed on the chest/front area with proper scaling
+- The artwork should be perfectly placed on ${printSideContext} with proper scaling
 - Add subtle artistic enhancements that complement the main design
 
 TECHNICAL SPECS:
 - Photorealistic studio quality photography with professional lighting
 - Dark gradient background that makes the garment POP
 - Clear visibility of fabric texture with realistic material properties
-- Front view with the design as the focal point
+- ${printSide === 'back' ? 'Back view' : 'Front view'} with the design as the focal point
 - Ultra high resolution, magazine-worthy quality`;
       } else {
         enhancedPrompt = `Create an EXTRAORDINARY, STATE-OF-THE-ART professional product mockup of ${isCustomColor ? 'a' : `a ${colorContext} colored`} ${productContext} ${isCustomFabric ? '' : `made from ${fabricDesc}`}.
@@ -101,6 +110,8 @@ DESIGN STYLE: ${styleVariation.style} - ${styleVariation.emphasis}
 
 CUSTOMER VISION (FOLLOW THIS EXACTLY): ${prompt}
 
+PRINT LOCATION: Design should be placed on ${printSideContext}
+
 ${isCustomProduct || isCustomColor || isCustomFabric ? 'NOTE: Customer has chosen "No Choice" for some options - interpret their prompt fully to determine product type, color, and/or fabric as they describe.' : ''}
 
 CRITICAL REQUIREMENTS:
@@ -108,14 +119,14 @@ CRITICAL REQUIREMENTS:
 - Create artwork that tells a story and connects emotionally with customers
 - Show EXCEPTIONAL attention to detail with professional artistry
 - The design should be something customers will be EXCITED to wear
-- Perfect composition and placement on the garment
+- Perfect composition and placement on ${printSideContext}
 - Add complementary design elements that enhance the main concept
 
 TECHNICAL SPECS:
 - Photorealistic studio quality photography with professional lighting setup
 - Dark gradient background that makes the garment stand out dramatically
 - Clear visibility of fabric texture with realistic material properties
-- Front view with the design as the hero element
+- ${printSide === 'back' ? 'Back view' : 'Front view'} with the design as the hero element
 - Ultra high resolution, editorial/magazine-worthy quality
 - Premium apparel photography aesthetic`;
       }
