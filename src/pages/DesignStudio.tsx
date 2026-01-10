@@ -1,7 +1,14 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, Sparkles, Loader2, Download, RefreshCw, Upload, X, Palette, Save, User, Check } from "lucide-react";
+import { ArrowLeft, Sparkles, Loader2, Download, RefreshCw, Upload, X, Palette, Save, User, Check, Ruler, DollarSign, Info } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,12 +17,53 @@ import { useAuth } from "@/hooks/useAuth";
 type ProductType = "hoodie" | "tshirt" | "crewneck" | "custom";
 type FabricType = "cotton" | "polyester" | "nylon" | "wool" | "fleece" | "linen" | "custom";
 type ColorType = string;
+type PrintSide = "front" | "back" | "both";
 
 interface GeneratedDesign {
   imageUrl: string;
   style: string;
   description: string;
 }
+
+const printSideOptions: { value: PrintSide; label: string; description: string }[] = [
+  { value: "front", label: "Front Only", description: "Design on front" },
+  { value: "back", label: "Back Only", description: "Design on back" },
+  { value: "both", label: "Front & Back", description: "Both sides" },
+];
+
+const sizeGuide = {
+  tshirt: [
+    { size: "XS", chest: "32-34", length: "26", shoulder: "16" },
+    { size: "S", chest: "34-36", length: "27", shoulder: "17" },
+    { size: "M", chest: "38-40", length: "28", shoulder: "18" },
+    { size: "L", chest: "42-44", length: "29", shoulder: "19" },
+    { size: "XL", chest: "46-48", length: "30", shoulder: "20" },
+    { size: "2XL", chest: "50-52", length: "31", shoulder: "21" },
+  ],
+  hoodie: [
+    { size: "XS", chest: "34-36", length: "25", shoulder: "17" },
+    { size: "S", chest: "36-38", length: "26", shoulder: "18" },
+    { size: "M", chest: "40-42", length: "27", shoulder: "19" },
+    { size: "L", chest: "44-46", length: "28", shoulder: "20" },
+    { size: "XL", chest: "48-50", length: "29", shoulder: "21" },
+    { size: "2XL", chest: "52-54", length: "30", shoulder: "22" },
+  ],
+  crewneck: [
+    { size: "XS", chest: "34-36", length: "25", shoulder: "17" },
+    { size: "S", chest: "36-38", length: "26", shoulder: "18" },
+    { size: "M", chest: "40-42", length: "27", shoulder: "19" },
+    { size: "L", chest: "44-46", length: "28", shoulder: "20" },
+    { size: "XL", chest: "48-50", length: "29", shoulder: "21" },
+    { size: "2XL", chest: "52-54", length: "30", shoulder: "22" },
+  ],
+};
+
+const pricingInfo = {
+  tshirt: { base: 29.99, backPrint: 10, premium: 5 },
+  hoodie: { base: 59.99, backPrint: 15, premium: 8 },
+  crewneck: { base: 49.99, backPrint: 12, premium: 7 },
+  custom: { base: 39.99, backPrint: 12, premium: 6 },
+};
 
 const productOptions: { value: ProductType; label: string }[] = [
   { value: "custom", label: "No Choice (Custom)" },
@@ -51,6 +99,7 @@ const DesignStudio = () => {
   const [productType, setProductType] = useState<ProductType>("custom");
   const [fabricType, setFabricType] = useState<FabricType>("custom");
   const [selectedColor, setSelectedColor] = useState<ColorType>("custom");
+  const [printSide, setPrintSide] = useState<PrintSide>("front");
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [generatedDesigns, setGeneratedDesigns] = useState<GeneratedDesign[]>([]);
@@ -61,6 +110,19 @@ const DesignStudio = () => {
   const { user } = useAuth();
 
   const selectedDesign = generatedDesigns[selectedDesignIndex] || null;
+
+  const getCurrentPrice = () => {
+    const pricing = pricingInfo[productType];
+    let total = pricing.base;
+    if (printSide === "both") total += pricing.backPrint;
+    if (fabricType === "wool" || fabricType === "linen") total += pricing.premium;
+    return total.toFixed(2);
+  };
+
+  const getCurrentSizeGuide = () => {
+    if (productType === "custom") return sizeGuide.tshirt;
+    return sizeGuide[productType];
+  };
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -111,6 +173,7 @@ const DesignStudio = () => {
           productType, 
           fabricType, 
           color: selectedColor,
+          printSide,
           referenceImage: uploadedImage,
           variationCount: 4
         },
@@ -254,6 +317,36 @@ const DesignStudio = () => {
               </div>
             </div>
 
+            {/* Print Side Selection */}
+            <div className="space-y-4">
+              <label className="text-sm font-medium text-white">Print Location</label>
+              <div className="grid grid-cols-3 gap-3">
+                {printSideOptions.map((option) => (
+                  <button
+                    key={option.value}
+                    onClick={() => setPrintSide(option.value)}
+                    className={`p-4 rounded-lg border transition-all duration-200 text-center ${
+                      printSide === option.value
+                        ? "border-white bg-white/20"
+                        : "border-white/10 bg-white/5 hover:border-white/30"
+                    }`}
+                  >
+                    <p className={`text-sm font-medium ${
+                      printSide === option.value ? "text-white" : "text-white/70"
+                    }`}>
+                      {option.label}
+                    </p>
+                    <p className="text-xs text-white/50 mt-1">
+                      {option.description}
+                    </p>
+                    {option.value === "both" && (
+                      <p className="text-xs text-emerald-400 mt-1">+${pricingInfo[productType].backPrint}</p>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             {/* Color Selection */}
             <div className="space-y-4">
               <label className="text-sm font-medium text-white flex items-center gap-2">
@@ -309,6 +402,127 @@ const DesignStudio = () => {
                     </p>
                   </button>
                 ))}
+              </div>
+            </div>
+
+            {/* Size Guide & Pricing Info */}
+            <div className="grid grid-cols-2 gap-4">
+              {/* Size Guide */}
+              <Dialog>
+                <DialogTrigger asChild>
+                  <button className="flex items-center justify-center gap-2 p-4 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
+                    <Ruler className="w-4 h-4 text-white/70" />
+                    <span className="text-sm text-white/70">Size Guide</span>
+                  </button>
+                </DialogTrigger>
+                <DialogContent className="bg-black/95 border-white/20 text-white max-w-md">
+                  <DialogHeader>
+                    <DialogTitle className="text-white flex items-center gap-2">
+                      <Ruler className="w-5 h-5" />
+                      Size Guide {productType !== "custom" && `- ${productType.charAt(0).toUpperCase() + productType.slice(1)}`}
+                    </DialogTitle>
+                  </DialogHeader>
+                  <div className="mt-4">
+                    <p className="text-xs text-white/60 mb-4">All measurements in inches</p>
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b border-white/20">
+                            <th className="text-left py-2 px-2 text-white/70 font-medium">Size</th>
+                            <th className="text-left py-2 px-2 text-white/70 font-medium">Chest</th>
+                            <th className="text-left py-2 px-2 text-white/70 font-medium">Length</th>
+                            <th className="text-left py-2 px-2 text-white/70 font-medium">Shoulder</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {getCurrentSizeGuide().map((row) => (
+                            <tr key={row.size} className="border-b border-white/10">
+                              <td className="py-2 px-2 font-medium text-white">{row.size}</td>
+                              <td className="py-2 px-2 text-white/70">{row.chest}"</td>
+                              <td className="py-2 px-2 text-white/70">{row.length}"</td>
+                              <td className="py-2 px-2 text-white/70">{row.shoulder}"</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                    <div className="mt-4 p-3 rounded-lg bg-white/5 border border-white/10">
+                      <p className="text-xs text-white/60 flex items-start gap-2">
+                        <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                        Measure your best-fitting garment flat and compare to our size chart for the perfect fit.
+                      </p>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
+
+              {/* Pricing Info */}
+              <Dialog>
+                <DialogTrigger asChild>
+                  <button className="flex items-center justify-center gap-2 p-4 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 transition-colors">
+                    <DollarSign className="w-4 h-4 text-white/70" />
+                    <span className="text-sm text-white/70">Pricing Info</span>
+                  </button>
+                </DialogTrigger>
+                <DialogContent className="bg-black/95 border-white/20 text-white max-w-md">
+                  <DialogHeader>
+                    <DialogTitle className="text-white flex items-center gap-2">
+                      <DollarSign className="w-5 h-5" />
+                      Pricing Details
+                    </DialogTitle>
+                  </DialogHeader>
+                  <div className="mt-4 space-y-4">
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center p-3 rounded-lg bg-white/5">
+                        <span className="text-white/70">T-Shirt</span>
+                        <span className="text-white font-medium">From ${pricingInfo.tshirt.base}</span>
+                      </div>
+                      <div className="flex justify-between items-center p-3 rounded-lg bg-white/5">
+                        <span className="text-white/70">Crewneck</span>
+                        <span className="text-white font-medium">From ${pricingInfo.crewneck.base}</span>
+                      </div>
+                      <div className="flex justify-between items-center p-3 rounded-lg bg-white/5">
+                        <span className="text-white/70">Hoodie</span>
+                        <span className="text-white font-medium">From ${pricingInfo.hoodie.base}</span>
+                      </div>
+                    </div>
+                    
+                    <div className="border-t border-white/10 pt-4">
+                      <p className="text-sm font-medium text-white mb-3">Add-ons</p>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex justify-between text-white/70">
+                          <span>Back Print</span>
+                          <span>+$10-15</span>
+                        </div>
+                        <div className="flex justify-between text-white/70">
+                          <span>Premium Fabric (Wool/Linen)</span>
+                          <span>+$5-8</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                      <p className="text-xs text-emerald-400 flex items-start gap-2">
+                        <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
+                        Free shipping on orders over $100. All designs include premium DTG printing.
+                      </p>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
+
+            {/* Current Price Estimate */}
+            <div className="p-4 rounded-lg bg-gradient-to-r from-emerald-500/10 to-teal-500/10 border border-emerald-500/20">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-white/60 uppercase tracking-wider">Estimated Price</p>
+                  <p className="text-2xl font-bold text-white">${getCurrentPrice()}</p>
+                </div>
+                <div className="text-right text-xs text-white/60">
+                  <p>{productType === "custom" ? "Custom" : productType.charAt(0).toUpperCase() + productType.slice(1)}</p>
+                  <p>{printSide === "both" ? "Front & Back" : printSide.charAt(0).toUpperCase() + printSide.slice(1)} print</p>
+                </div>
               </div>
             </div>
 
