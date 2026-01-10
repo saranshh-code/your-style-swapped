@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
-import hoodieImage from "@/assets/hoodie-hero.jpg";
+import hoodieImage from "@/assets/hoodie-hero.png";
 import tshirtImage from "@/assets/tshirt-product.png";
 import crewneckImage from "@/assets/crewneck-product.png";
 
