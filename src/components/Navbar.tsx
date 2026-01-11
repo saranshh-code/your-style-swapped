@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, User } from "lucide-react";
+import swapsLogo from "@/assets/swaps-logo.png";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 const Navbar = () => {
@@ -31,7 +32,13 @@ const Navbar = () => {
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-18">
           {/* Logo */}
-          <Link to="/" className="text-2xl tracking-tight text-white font-sans">swaps</Link>
+          <Link to="/" className="flex items-center">
+            <img 
+              src={swapsLogo} 
+              alt="Swaps.in" 
+              className="h-8 md:h-10 w-auto hover:brightness-110 transition-all duration-200"
+            />
+          </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-10">
