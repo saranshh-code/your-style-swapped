@@ -14,7 +14,7 @@ const products = [
   },
   {
     name: "T-Shirts",
-    description: "100% organic cotton",
+    description: "100% organic & breathable",
     image: tshirtImage,
     price: "From ₹300",
   },
