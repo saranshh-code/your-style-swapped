@@ -20,7 +20,7 @@ const steps = [
     number: "03",
     title: "We Deliver",
     description:
-      "Once approved, we produce your premium custom apparel and ship it directly to your door within 48 hours.",
+      "Once approved, we produce your premium custom apparel and ship it directly to your door within 5-7 working days.",
   },
 ];
 
