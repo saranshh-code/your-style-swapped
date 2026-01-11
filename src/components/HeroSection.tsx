@@ -11,9 +11,9 @@ const HeroSection = () => {
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
           {/* Left Content */}
           <div className="text-center lg:text-left">
-            <p className="text-sm tracking-[0.2em] uppercase text-white/60 mb-6">
-              AI-Powered Custom Apparel
-            </p>
+            <p className="text-sm tracking-[0.2em] uppercase text-white/60 mb-6">AI-POWERED CUSTOM APPAREL
+
+          </p>
 
             <h1 className="font-display text-5xl md:text-6xl lg:text-7xl leading-[1.1] mb-8 text-white">
               Precision crafted,
