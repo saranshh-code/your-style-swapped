@@ -31,9 +31,7 @@ const Navbar = () => {
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-18">
           {/* Logo */}
-          <Link to="/" className="font-display text-2xl tracking-tight text-white">
-            Swaps
-          </Link>
+          <Link to="/" className="text-2xl tracking-tight text-white font-sans">swaps</Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-10">

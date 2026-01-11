@@ -21,10 +21,7 @@ const HeroSection = () => {
               <span className="text-white/70">uniquely yours</span>
             </h1>
 
-            <p className="text-lg text-white/70 max-w-md mx-auto lg:mx-0 mb-10 leading-relaxed">
-              Transform your vision into premium custom apparel with AI-powered design.
-              No minimum orders, delivered to your door.
-            </p>
+            <p className="text-lg text-white/70 max-w-md mx-auto lg:mx-0 mb-10 leading-relaxed">Transform your vision into premium custom apparel with AI-powered design , swap away your old boring designs and bring your ideas to life with swaps.</p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Button variant="hero" size="xl" asChild>
@@ -43,12 +40,12 @@ const HeroSection = () => {
             {/* Stats */}
             <div className="gap-12 mt-16 lg:justify-start flex-row flex items-start justify-center">
               <div>
-                <p className="text-3xl font-display text-white">10K+</p>
+                <p className="text-3xl font-display text-white">1k+</p>
                 <p className="text-sm text-white/60 mt-1">Designs created</p>
               </div>
               <div className="w-px h-12 bg-white/20" />
               <div>
-                <p className="text-3xl font-display text-white">48h</p>
+                <p className="text-3xl font-display text-white">5-7 days</p>
                 <p className="text-sm text-white/60 mt-1">Fast delivery</p>
               </div>
               <div className="w-px h-12 bg-white/20" />
