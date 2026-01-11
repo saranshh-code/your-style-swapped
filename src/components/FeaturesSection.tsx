@@ -29,7 +29,7 @@ const features = [
   {
     icon: Truck,
     title: "Fast Delivery",
-    description: "Production and delivery in as little as 48 hours worldwide.",
+    description: "Production and delivery in as little as 5 days worldwide.",
   },
 ];
 
