@@ -10,19 +10,19 @@ const products = [
     name: "Hoodies",
     description: "Premium heavyweight cotton blend",
     image: hoodieImage,
-    price: "From $59",
+    price: "From ₹600",
   },
   {
     name: "T-Shirts",
     description: "100% organic cotton",
     image: tshirtImage,
-    price: "From $29",
+    price: "From ₹300",
   },
   {
     name: "Crewnecks",
     description: "Soft fleece interior",
     image: crewneckImage,
-    price: "From $49",
+    price: "From ₹500",
   },
 ];
 
