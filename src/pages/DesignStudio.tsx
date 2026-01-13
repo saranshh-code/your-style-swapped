@@ -129,26 +129,10 @@ const sizeGuide = {
   }]
 };
 const pricingInfo = {
-  tshirt: {
-    base: 29.99,
-    backPrint: 10,
-    premium: 5
-  },
-  hoodie: {
-    base: 59.99,
-    backPrint: 15,
-    premium: 8
-  },
-  crewneck: {
-    base: 49.99,
-    backPrint: 12,
-    premium: 7
-  },
-  custom: {
-    base: 39.99,
-    backPrint: 12,
-    premium: 6
-  }
+  tshirt: { base: 300 },
+  hoodie: { base: 600 },
+  crewneck: { base: 500 },
+  custom: { base: 400 }
 };
 const productOptions: {
   value: ProductType;
@@ -264,10 +248,7 @@ const DesignStudio = () => {
   const selectedDesign = generatedDesigns[selectedDesignIndex] || null;
   const getCurrentPrice = () => {
     const pricing = pricingInfo[productType];
-    let total = pricing.base;
-    if (printSide === "both") total += pricing.backPrint;
-    if (fabricType === "wool" || fabricType === "linen") total += pricing.premium;
-    return total.toFixed(2);
+    return `₹${pricing.base}`;
   };
   const getCurrentSizeGuide = () => {
     if (productType === "custom") return sizeGuide.tshirt;
@@ -552,15 +533,15 @@ const DesignStudio = () => {
                     <div className="space-y-3">
                       <div className="flex justify-between items-center p-3 rounded-lg bg-white/5">
                         <span className="text-white/70">T-Shirt</span>
-                        <span className="text-white font-medium">From ${pricingInfo.tshirt.base}</span>
+                        <span className="text-white font-medium">From ₹{pricingInfo.tshirt.base}</span>
                       </div>
                       <div className="flex justify-between items-center p-3 rounded-lg bg-white/5">
                         <span className="text-white/70">Crewneck</span>
-                        <span className="text-white font-medium">From ${pricingInfo.crewneck.base}</span>
+                        <span className="text-white font-medium">From ₹{pricingInfo.crewneck.base}</span>
                       </div>
                       <div className="flex justify-between items-center p-3 rounded-lg bg-white/5">
                         <span className="text-white/70">Hoodie</span>
-                        <span className="text-white font-medium">From ${pricingInfo.hoodie.base}</span>
+                        <span className="text-white font-medium">From ₹{pricingInfo.hoodie.base}</span>
                       </div>
                     </div>
                     
@@ -569,11 +550,11 @@ const DesignStudio = () => {
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between text-white/70">
                           <span>Back Print</span>
-                          <span>+$10-15</span>
+                          <span>+₹200-400</span>
                         </div>
                         <div className="flex justify-between text-white/70">
                           <span>Premium Fabric (Wool/Linen)</span>
-                          <span>+$5-8</span>
+                          <span>+₹100-200</span>
                         </div>
                       </div>
                     </div>
@@ -581,7 +562,7 @@ const DesignStudio = () => {
                     <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
                       <p className="text-xs text-emerald-400 flex items-start gap-2">
                         <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                        Free shipping on orders over $100. All designs include premium DTG printing.
+                        Free shipping on orders over ₹2000. All designs include premium DTG printing.
                       </p>
                     </div>
                   </div>
