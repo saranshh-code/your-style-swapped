@@ -28,24 +28,24 @@ const products = [
 
 const ProductsSection = () => {
   return (
-    <section id="products" className="py-32">
-      <div className="container mx-auto px-6">
+    <section id="products" className="py-16 sm:py-32">
+      <div className="container mx-auto px-4 sm:px-6">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-16">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-10 sm:mb-16">
           <div className="max-w-lg">
             <p className="text-sm tracking-[0.2em] uppercase text-white/60 mb-4">Our Canvas</p>
-            <h2 className="font-display text-4xl md:text-5xl text-white">
+            <h2 className="font-display text-3xl sm:text-4xl md:text-5xl text-white">
               Choose your style
             </h2>
           </div>
-          <Button variant="heroOutline" size="lg" className="mt-6 md:mt-0 border-white/30 text-white hover:bg-white/10">
+          <Button variant="heroOutline" size="lg" className="mt-6 md:mt-0 border-white/30 text-white hover:bg-white/10 w-full sm:w-auto">
             View all products
             <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
         </div>
 
         {/* Product Grid */}
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8">
           {products.map((product) => (
             <Link
               to="/design"
