@@ -35,22 +35,22 @@ const features = [
 
 const FeaturesSection = () => {
   return (
-    <section id="features" className="py-32">
-      <div className="container mx-auto px-6">
+    <section id="features" className="py-16 sm:py-32">
+      <div className="container mx-auto px-4 sm:px-6">
         {/* Section Header */}
-        <div className="max-w-2xl mx-auto text-center mb-20">
+        <div className="max-w-2xl mx-auto text-center mb-12 sm:mb-20">
           <p className="text-sm tracking-[0.2em] uppercase text-white/60 mb-4">Why Swaps</p>
-          <h2 className="font-display text-4xl md:text-5xl text-white mb-6">
+          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl text-white mb-4 sm:mb-6">
             Built for quality,
             <br />designed for you
           </h2>
-          <p className="text-white/70 text-lg">
+          <p className="text-white/70 text-base sm:text-lg">
             Every detail considered. Every stitch intentional.
           </p>
         </div>
 
         {/* Features Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8">
           {features.map((feature) => (
             <div
               key={feature.title}

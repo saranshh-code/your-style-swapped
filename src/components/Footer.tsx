@@ -23,11 +23,11 @@ const Footer = () => {
   };
 
   return (
-    <footer className="py-20 border-t border-white/10 bg-black/40 backdrop-blur-sm">
-      <div className="container mx-auto px-6">
-        <div className="grid md:grid-cols-5 gap-12 mb-16">
+    <footer className="py-12 sm:py-20 border-t border-white/10 bg-black/40 backdrop-blur-sm">
+      <div className="container mx-auto px-4 sm:px-6">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 sm:gap-12 mb-12 sm:mb-16">
           {/* Brand */}
-          <div className="md:col-span-2">
+          <div className="col-span-2">
             <h3 className="font-display text-2xl text-white mb-4">Swaps</h3>
             <p className="text-white/70 max-w-xs mb-6 text-sm leading-relaxed">
               AI-powered custom apparel. From your imagination to your wardrobe, 
