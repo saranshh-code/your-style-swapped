@@ -138,15 +138,6 @@ TECHNICAL SPECS:
         type: 'text',
         text: enhancedPrompt
       });
-      
-      if (referenceImage) {
-        messageContent.push({
-          type: 'image_url',
-          image_url: {
-            url: referenceImage
-          }
-        });
-      }
 
       const modelName = 'gemini-2.5-flash-image';
       const imageMimeTypeMatch = referenceImage?.match(/^data:(image\/[^;]+);base64,/);
