@@ -138,17 +138,13 @@ TECHNICAL SPECS:
         type: 'text',
         text: enhancedPrompt
       });
-      
-      if (referenceImage) {
-        messageContent.push({
-          type: 'image_url',
-          image_url: {
-            url: referenceImage
-          }
-        });
-      }
 
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${GOOGLE_GEMINI_API_KEY}`, {
+      const modelName = 'gemini-2.5-flash-image';
+      const imageMimeTypeMatch = referenceImage?.match(/^data:(image\/[^;]+);base64,/);
+      const imageMimeType = imageMimeTypeMatch?.[1] || 'image/png';
+      const base64ImageData = referenceImage?.replace(/^data:image\/[^;]+;base64,/, '');
+
+      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${GOOGLE_GEMINI_API_KEY}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -156,24 +152,29 @@ TECHNICAL SPECS:
         body: JSON.stringify({
           contents: [
             {
-              parts: referenceImage 
+              parts: referenceImage
                 ? [
+                    {
+                      inlineData: {
+                        mimeType: imageMimeType,
+                        data: base64ImageData,
+                      },
+                    },
                     { text: enhancedPrompt },
-                    { inline_data: { mime_type: 'image/png', data: referenceImage.replace(/^data:image\/\w+;base64,/, '') } }
                   ]
-                : [{ text: enhancedPrompt }]
-            }
+                : [{ text: enhancedPrompt }],
+            },
           ],
           generationConfig: {
-            responseModalities: ['TEXT', 'IMAGE']
-          }
+            responseModalities: ['TEXT', 'IMAGE'],
+          },
         }),
       });
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error(`AI Gateway error for variation ${index + 1}:`, response.status, errorText);
-        
+        console.error(`Gemini API error for variation ${index + 1}:`, response.status, errorText);
+
         if (response.status === 429) {
           throw { status: 429, message: 'Rate limit exceeded. Please try again in a moment.' };
         }
