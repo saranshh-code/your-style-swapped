@@ -1,4 +1,5 @@
 import { useState, useRef } from "react";
+import { FunctionsHttpError } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Sparkles, Loader2, Download, RefreshCw, Upload, X, Palette, Save, User, Check, Ruler, DollarSign, Info } from "lucide-react";
@@ -286,14 +287,13 @@ const DesignStudio = () => {
       toast.error("Please describe your design idea");
       return;
     }
+
     setIsGenerating(true);
     setGeneratedDesigns([]);
     setSelectedDesignIndex(0);
+
     try {
-      const {
-        data,
-        error
-      } = await supabase.functions.invoke("generate-design", {
+      const { data, error } = await supabase.functions.invoke("generate-design", {
         body: {
           prompt,
           productType,
@@ -301,18 +301,36 @@ const DesignStudio = () => {
           color: selectedColor,
           printSide,
           referenceImage: uploadedImage,
-          variationCount: 4
-        }
+          variationCount: 4,
+        },
       });
+
       if (error) {
         console.error("Function error:", error);
+
+        if (error instanceof FunctionsHttpError) {
+          try {
+            const errorBody = await error.context.json();
+            const errorMessage =
+              typeof errorBody?.error === "string"
+                ? errorBody.error
+                : error.message || "Failed to generate designs";
+            toast.error(errorMessage);
+            return;
+          } catch (parseError) {
+            console.error("Failed to parse function error body:", parseError);
+          }
+        }
+
         toast.error(error.message || "Failed to generate designs");
         return;
       }
+
       if (data?.error) {
         toast.error(data.error);
         return;
       }
+
       if (data?.designs && data.designs.length > 0) {
         setGeneratedDesigns(data.designs);
         toast.success(`Generated ${data.designs.length} unique designs for you!`);
