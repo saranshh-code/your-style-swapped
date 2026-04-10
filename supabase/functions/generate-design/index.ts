@@ -55,11 +55,11 @@ serve(async (req) => {
     const fabricDesc = isCustomFabric ? 'appropriate premium fabric' : (fabricDescriptions[fabricType] || 'premium fabric');
 
     const styleVariations = [
-      { style: 'clean minimalist', emphasis: 'elegant simplicity' },
-      { style: 'bold artistic', emphasis: 'vibrant expressive elements' },
-      { style: 'intricate detailed', emphasis: 'complex patterns with fine artistry' },
-      { style: 'modern contemporary', emphasis: 'trendy current aesthetics' },
-      { style: 'vintage retro', emphasis: 'classic nostalgic charm' },
+      { style: 'casual everyday', emphasis: 'simple relaxed styling, like something from Uniqlo or Muji' },
+      { style: 'streetwear minimal', emphasis: 'clean urban look, subtle branding, Zara-inspired' },
+      { style: 'vintage washed', emphasis: 'slightly faded, lived-in feel, soft worn-in texture' },
+      { style: 'modern essential', emphasis: 'timeless wardrobe staple, H&M basics aesthetic' },
+      { style: 'artisan handmade', emphasis: 'imperfect charm, screen-printed or hand-stitched feel' },
     ];
 
     const numVariations = Math.min(Math.max(variationCount, 1), 5);
@@ -68,20 +68,25 @@ serve(async (req) => {
     console.log(`Generating ${numVariations} design variations via Lovable AI`);
 
     const generateDesign = async (styleVariation: { style: string; emphasis: string }, index: number) => {
-      const enhancedPrompt = `Create a professional product mockup of ${isCustomColor ? 'a' : `a ${colorContext}`} ${productContext} ${isCustomFabric ? '' : `made from ${fabricDesc}`}.
+      const enhancedPrompt = `Photograph a real ${isCustomColor ? '' : `${colorContext} `}${productContext}${isCustomFabric ? '' : ` made from ${fabricDesc}`} laid flat on a clean surface or worn casually by a person.
 
-DESIGN STYLE: ${styleVariation.style} - ${styleVariation.emphasis}
-CUSTOMER VISION: ${prompt}
-PRINT LOCATION: ${printSideContext}
+STYLE DIRECTION: ${styleVariation.style} — ${styleVariation.emphasis}
+DESIGN CONCEPT: ${prompt}
+PRINT PLACEMENT: ${printSideContext}
 
-${isCustomProduct || isCustomColor || isCustomFabric ? 'NOTE: Customer chose "No Choice" for some options - interpret their prompt fully.' : ''}
+${isCustomProduct || isCustomColor || isCustomFabric ? 'NOTE: Some options left open — interpret the prompt naturally.' : ''}
 
-Requirements:
-- Visually stunning, premium quality design
-- Photorealistic studio photography with professional lighting
-- Dark gradient background
-- ${printSide === 'back' ? 'Back view' : 'Front view'} with design as focal point
-- Ultra high resolution, magazine-worthy quality`;
+IMPORTANT RULES:
+- Must look like a REAL PHOTOGRAPH of a real garment, not a digital render or concept art
+- Show realistic fabric texture: natural wrinkles, soft folds, visible weave or knit
+- Use soft natural daylight lighting only — NO neon, NO dramatic studio lighting, NO glossy reflections
+- The design/print on the garment should be simple, intentional, and minimal — like something from Zara, Uniqlo, or H&M
+- Avoid perfect symmetry, excessive detail, or fantasy elements
+- Garment proportions must be realistic and wearable
+- Background should be simple: white/cream surface, wooden table, or neutral bedroom setting
+- If showing on a person, use natural casual posing — NOT a fashion runway pose
+- The overall mood should feel approachable, everyday, and commercially viable
+- NO metallic textures, NO holographic effects, NO hyper-detailed illustrations on the garment`;
 
       const messageContent: Array<{ type: string; text?: string; image_url?: { url: string } }> = [
         { type: 'text', text: enhancedPrompt }
