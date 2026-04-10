@@ -6,7 +6,6 @@ const corsHeaders = {
 };
 
 serve(async (req) => {
-  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
   }
@@ -21,16 +20,15 @@ serve(async (req) => {
       );
     }
 
-    const GOOGLE_GEMINI_API_KEY = Deno.env.get('GOOGLE_GEMINI_API_KEY');
-    if (!GOOGLE_GEMINI_API_KEY) {
-      console.error('GOOGLE_GEMINI_API_KEY is not configured');
+    const LOVABLE_API_KEY = Deno.env.get('LOVABLE_API_KEY');
+    if (!LOVABLE_API_KEY) {
+      console.error('LOVABLE_API_KEY is not configured');
       return new Response(
-        JSON.stringify({ error: 'AI service not configured. Please add your Google Gemini API key.' }),
+        JSON.stringify({ error: 'AI service not configured.' }),
         { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    // Handle "custom" options - let the prompt define everything
     const isCustomProduct = !productType || productType === 'custom';
     const isCustomFabric = !fabricType || fabricType === 'custom';
     const isCustomColor = !color || color === 'custom';
@@ -38,148 +36,86 @@ serve(async (req) => {
     const productContext = isCustomProduct ? 'apparel/clothing item' : productType;
     const colorContext = isCustomColor ? 'any color as described in the prompt' : color;
     
-    // Print side context
     const printSideContext = printSide === 'both' 
-      ? 'BOTH FRONT AND BACK of the garment (show both sides or indicate dual-sided design)'
+      ? 'BOTH FRONT AND BACK of the garment'
       : printSide === 'back' 
         ? 'the BACK of the garment'
         : 'the FRONT of the garment';
     
-    // Map fabric types to descriptive textures
     const fabricDescriptions: Record<string, string> = {
-      cotton: 'soft premium cotton fabric with natural organic texture and comfortable feel',
-      polyester: 'smooth high-performance polyester fabric with athletic sheen and moisture-wicking properties',
-      nylon: 'lightweight durable nylon fabric with sleek modern finish and water-resistant coating',
-      wool: 'luxurious warm woolen fabric with cozy texture and premium hand-feel',
-      fleece: 'ultra-soft plush fleece fabric with fuzzy texture and exceptional warmth',
-      linen: 'breathable natural linen fabric with elegant drape and sophisticated texture',
-      custom: 'premium fabric as specified in the customer\'s description'
+      cotton: 'soft premium cotton fabric',
+      polyester: 'smooth high-performance polyester fabric',
+      nylon: 'lightweight durable nylon fabric',
+      wool: 'luxurious warm woolen fabric',
+      fleece: 'ultra-soft plush fleece fabric',
+      linen: 'breathable natural linen fabric',
+      custom: 'premium fabric as specified'
     };
     
-    const fabricDesc = isCustomFabric ? 'appropriate premium fabric as described by customer' : (fabricDescriptions[fabricType] || 'premium fabric');
+    const fabricDesc = isCustomFabric ? 'appropriate premium fabric' : (fabricDescriptions[fabricType] || 'premium fabric');
 
-    // Design style variations for variety
     const styleVariations = [
-      { style: 'clean minimalist', emphasis: 'elegant simplicity with refined details and subtle sophistication' },
-      { style: 'bold artistic', emphasis: 'vibrant expressive elements with creative flair and eye-catching composition' },
-      { style: 'intricate detailed', emphasis: 'complex patterns with meticulous craftsmanship and fine artistry' },
-      { style: 'modern contemporary', emphasis: 'trendy current aesthetics with fresh innovative approach' },
-      { style: 'vintage retro', emphasis: 'classic nostalgic charm with timeless appeal and heritage feel' },
+      { style: 'clean minimalist', emphasis: 'elegant simplicity' },
+      { style: 'bold artistic', emphasis: 'vibrant expressive elements' },
+      { style: 'intricate detailed', emphasis: 'complex patterns with fine artistry' },
+      { style: 'modern contemporary', emphasis: 'trendy current aesthetics' },
+      { style: 'vintage retro', emphasis: 'classic nostalgic charm' },
     ];
 
-    // Limit variations
     const numVariations = Math.min(Math.max(variationCount, 1), 5);
     const selectedStyles = styleVariations.slice(0, numVariations);
 
-    console.log(`Generating ${numVariations} design variations for prompt:`, prompt, 'Print side:', printSide);
-    console.log('Reference image provided:', !!referenceImage);
+    console.log(`Generating ${numVariations} design variations via Lovable AI`);
 
-    // Generate multiple designs in parallel
     const generateDesign = async (styleVariation: { style: string; emphasis: string }, index: number) => {
-      let enhancedPrompt: string;
-      
-      if (referenceImage) {
-        enhancedPrompt = `Create an EXTRAORDINARY, STATE-OF-THE-ART professional product mockup of ${isCustomColor ? 'a' : `a ${colorContext} colored`} ${productContext} ${isCustomFabric ? '' : `made from ${fabricDesc}`}.
-        
+      const enhancedPrompt = `Create a professional product mockup of ${isCustomColor ? 'a' : `a ${colorContext}`} ${productContext} ${isCustomFabric ? '' : `made from ${fabricDesc}`}.
+
 DESIGN STYLE: ${styleVariation.style} - ${styleVariation.emphasis}
+CUSTOMER VISION: ${prompt}
+PRINT LOCATION: ${printSideContext}
 
-CUSTOMER VISION (FOLLOW THIS EXACTLY): ${prompt}
+${isCustomProduct || isCustomColor || isCustomFabric ? 'NOTE: Customer chose "No Choice" for some options - interpret their prompt fully.' : ''}
 
-PRINT LOCATION: Design should be placed on ${printSideContext}
-
-${isCustomProduct || isCustomColor || isCustomFabric ? 'NOTE: Customer has chosen "No Choice" for some options - interpret their prompt fully to determine product type, color, and/or fabric as they describe.' : ''}
-
-CRITICAL REQUIREMENTS:
-- Incorporate the uploaded image/logo SEAMLESSLY into the design with artistic integration
-- The design must be VISUALLY STUNNING and PREMIUM quality that exceeds customer expectations
-- Show INTRICATE details, sharp lines, and professional craftsmanship
-- Create a design that customers will be PROUD to wear and show off
-- The artwork should be perfectly placed on ${printSideContext} with proper scaling
-- Add subtle artistic enhancements that complement the main design
-
-TECHNICAL SPECS:
-- Photorealistic studio quality photography with professional lighting
-- Dark gradient background that makes the garment POP
-- Clear visibility of fabric texture with realistic material properties
-- ${printSide === 'back' ? 'Back view' : 'Front view'} with the design as the focal point
+Requirements:
+- Visually stunning, premium quality design
+- Photorealistic studio photography with professional lighting
+- Dark gradient background
+- ${printSide === 'back' ? 'Back view' : 'Front view'} with design as focal point
 - Ultra high resolution, magazine-worthy quality`;
-      } else {
-        enhancedPrompt = `Create an EXTRAORDINARY, STATE-OF-THE-ART professional product mockup of ${isCustomColor ? 'a' : `a ${colorContext} colored`} ${productContext} ${isCustomFabric ? '' : `made from ${fabricDesc}`}.
 
-DESIGN STYLE: ${styleVariation.style} - ${styleVariation.emphasis}
+      const messageContent: Array<{ type: string; text?: string; image_url?: { url: string } }> = [
+        { type: 'text', text: enhancedPrompt }
+      ];
 
-CUSTOMER VISION (FOLLOW THIS EXACTLY): ${prompt}
-
-PRINT LOCATION: Design should be placed on ${printSideContext}
-
-${isCustomProduct || isCustomColor || isCustomFabric ? 'NOTE: Customer has chosen "No Choice" for some options - interpret their prompt fully to determine product type, color, and/or fabric as they describe.' : ''}
-
-CRITICAL REQUIREMENTS:
-- Design must be VISUALLY STUNNING, INTRICATE, and UNIQUE
-- Create artwork that tells a story and connects emotionally with customers
-- Show EXCEPTIONAL attention to detail with professional artistry
-- The design should be something customers will be EXCITED to wear
-- Perfect composition and placement on ${printSideContext}
-- Add complementary design elements that enhance the main concept
-
-TECHNICAL SPECS:
-- Photorealistic studio quality photography with professional lighting setup
-- Dark gradient background that makes the garment stand out dramatically
-- Clear visibility of fabric texture with realistic material properties
-- ${printSide === 'back' ? 'Back view' : 'Front view'} with the design as the hero element
-- Ultra high resolution, editorial/magazine-worthy quality
-- Premium apparel photography aesthetic`;
+      if (referenceImage) {
+        messageContent.push({
+          type: 'image_url',
+          image_url: { url: referenceImage }
+        });
       }
 
-      // Build the message content
-      const messageContent: Array<{ type: string; text?: string; image_url?: { url: string } }> = [];
-      
-      messageContent.push({
-        type: 'text',
-        text: enhancedPrompt
-      });
-
-      const modelName = 'gemini-2.5-flash-image';
-      const imageMimeTypeMatch = referenceImage?.match(/^data:(image\/[^;]+);base64,/);
-      const imageMimeType = imageMimeTypeMatch?.[1] || 'image/png';
-      const base64ImageData = referenceImage?.replace(/^data:image\/[^;]+;base64,/, '');
-
-      const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${GOOGLE_GEMINI_API_KEY}`, {
+      const response = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
         method: 'POST',
         headers: {
+          'Authorization': `Bearer ${LOVABLE_API_KEY}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          contents: [
-            {
-              parts: referenceImage
-                ? [
-                    {
-                      inlineData: {
-                        mimeType: imageMimeType,
-                        data: base64ImageData,
-                      },
-                    },
-                    { text: enhancedPrompt },
-                  ]
-                : [{ text: enhancedPrompt }],
-            },
-          ],
-          generationConfig: {
-            responseModalities: ['TEXT', 'IMAGE'],
-          },
+          model: 'google/gemini-2.5-flash-image',
+          messages: [{ role: 'user', content: messageContent }],
+          modalities: ['image', 'text'],
         }),
       });
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error(`Gemini API error for variation ${index + 1}:`, response.status, errorText);
+        console.error(`Lovable AI error for variation ${index + 1}:`, response.status, errorText);
 
         if (response.status === 429) {
           throw { status: 429, message: 'Rate limit exceeded. Please try again in a moment.' };
         }
         if (response.status === 402) {
-          throw { status: 402, message: 'AI credits exhausted. Please add credits to continue.' };
+          throw { status: 402, message: 'AI credits exhausted. Please add credits in Settings > Workspace > Usage.' };
         }
         
         throw { status: 500, message: 'Failed to generate design variation' };
@@ -187,22 +123,12 @@ TECHNICAL SPECS:
 
       const data = await response.json();
       
-      // Extract image from Gemini response
-      const parts = data.candidates?.[0]?.content?.parts || [];
-      let imageUrl = '';
-      let textResponse = '';
-      
-      for (const part of parts) {
-        if (part.inlineData) {
-          imageUrl = `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
-        }
-        if (part.text) {
-          textResponse = part.text;
-        }
-      }
+      const choice = data.choices?.[0]?.message;
+      const textResponse = choice?.content || '';
+      const imageUrl = choice?.images?.[0]?.image_url?.url || '';
 
       if (!imageUrl) {
-        console.error(`No image in response for variation ${index + 1}:`, JSON.stringify(data));
+        console.error(`No image in response for variation ${index + 1}:`, JSON.stringify(data).slice(0, 500));
         return null;
       }
 
@@ -213,12 +139,10 @@ TECHNICAL SPECS:
       };
     };
 
-    // Generate all variations in parallel
     const results = await Promise.allSettled(
       selectedStyles.map((style, index) => generateDesign(style, index))
     );
 
-    // Process results
     const designs: Array<{ imageUrl: string; style: string; description: string }> = [];
     let firstError: { status: number; message: string } | null = null;
 
@@ -230,7 +154,6 @@ TECHNICAL SPECS:
       }
     }
 
-    // If no designs were generated, return the error
     if (designs.length === 0) {
       if (firstError) {
         return new Response(
@@ -247,10 +170,7 @@ TECHNICAL SPECS:
     console.log(`Successfully generated ${designs.length} design variations`);
 
     return new Response(
-      JSON.stringify({ 
-        designs,
-        count: designs.length
-      }),
+      JSON.stringify({ designs, count: designs.length }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
 
