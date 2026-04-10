@@ -55,11 +55,11 @@ serve(async (req) => {
     const fabricDesc = isCustomFabric ? 'appropriate premium fabric' : (fabricDescriptions[fabricType] || 'premium fabric');
 
     const styleVariations = [
-      { style: 'casual everyday', emphasis: 'simple relaxed styling, like something from Uniqlo or Muji' },
-      { style: 'streetwear minimal', emphasis: 'clean urban look, subtle branding, Zara-inspired' },
-      { style: 'vintage washed', emphasis: 'slightly faded, lived-in feel, soft worn-in texture' },
-      { style: 'modern essential', emphasis: 'timeless wardrobe staple, H&M basics aesthetic' },
-      { style: 'artisan handmade', emphasis: 'imperfect charm, screen-printed or hand-stitched feel' },
+      { style: 'casual everyday', emphasis: 'effortless daily wear, Uniqlo basics vibe — zero styling effort needed' },
+      { style: 'modern streetwear', emphasis: 'Essentials / Fear of God inspired, oversized relaxed fit, premium minimalism' },
+      { style: 'washed vintage', emphasis: 'slightly sun-faded, soft worn-in cotton, thrift-store charm' },
+      { style: 'clean essential', emphasis: 'Zara menswear staple, structured but comfortable, wardrobe backbone' },
+      { style: 'artisan minimal', emphasis: 'subtle hand-finished details, screen-print texture, imperfect on purpose' },
     ];
 
     const numVariations = Math.min(Math.max(variationCount, 1), 5);
@@ -68,32 +68,46 @@ serve(async (req) => {
     console.log(`Generating ${numVariations} design variations via Lovable AI`);
 
     const generateDesign = async (styleVariation: { style: string; emphasis: string }, index: number) => {
-      const enhancedPrompt = `Professional fashion editorial photograph of a real model wearing a ${isCustomColor ? '' : `${colorContext} `}${productContext}${isCustomFabric ? '' : ` made from ${fabricDesc}`} in a clean white photography studio.
+      const enhancedPrompt = `A candid, editorial-style photograph of a real person wearing a ${isCustomColor ? '' : `${colorContext} `}${productContext}${isCustomFabric ? '' : ` made from ${fabricDesc}`}, shot in a clean white photography studio.
 
-STYLE DIRECTION: ${styleVariation.style} — ${styleVariation.emphasis}
-DESIGN CONCEPT: ${prompt}
+STYLE: ${styleVariation.style} — ${styleVariation.emphasis}
+DESIGN IDEA: ${prompt}
 PRINT PLACEMENT: ${printSideContext}
 
-${isCustomProduct || isCustomColor || isCustomFabric ? 'NOTE: Some options left open — interpret the prompt naturally.' : ''}
+${isCustomProduct || isCustomColor || isCustomFabric ? 'NOTE: Some options left open — interpret naturally based on the prompt.' : ''}
 
-MANDATORY REQUIREMENTS:
-- A REAL human model must be wearing the garment, standing naturally in a WHITE STUDIO BACKGROUND
-- The model should have a relaxed, confident pose — NOT stiff or overly posed
-- Full body or 3/4 body shot showing the garment clearly
-- Clean white seamless backdrop with soft studio lighting and natural shadows on the floor
-- Must look like a REAL PHOTOGRAPH, not a digital render or concept art
-- Realistic fabric texture: natural drape, soft folds, visible weave or knit on the garment
-- Soft diffused studio lighting — NO harsh shadows, NO neon, NO dramatic colored lighting
-- The design/print on the garment should be simple, intentional, and minimal — like something from Zara, Uniqlo, or H&M
-- Garment must fit naturally on the model with realistic proportions
-- The overall mood should feel like a real e-commerce product photo or lookbook shot
+PHOTOGRAPHY DIRECTION:
+- Soft, diffused natural daylight — as if shot near a large window in a white studio
+- Gentle realistic shadows on the floor, NO harsh directional light
+- 3/4 body or full body framing, model centered with generous negative space
+- The model should stand in a relaxed, natural posture — weight shifted to one leg, hands in pockets or at sides
+- NOT a stiff catalog pose — think "friend photographed casually"
 
-AVOID:
-- Flat-lay or garment-only shots (must show on a model)
-- Perfect symmetry or excessive detail on the garment design
-- Metallic textures, holographic effects, or hyper-detailed illustrations
-- Fantasy elements, glossy reflections, or unrealistic proportions
-- Busy or colored backgrounds — ONLY clean white studio`;
+GARMENT & FABRIC REALISM:
+- The garment must show real fabric behavior: natural drape, soft folds, slight wrinkles at elbows/waist
+- Visible fabric texture — you should be able to see the cotton weave, terry loops, or knit pattern
+- The fit should look like how a real person wears clothes — slightly bunched at the waist, collar sitting naturally
+- Any design/graphic on the garment should be minimal, intentional, and look screen-printed or embroidered — NOT digitally overlaid
+
+AESTHETIC:
+- Modern streetwear inspired by Zara, Uniqlo, Essentials, COS
+- Premium but understated — strong negative space, no visual clutter
+- Subtle imperfections that make it feel authentic (a tiny crease, slightly uneven hem)
+- The overall image should look like it belongs on a real e-commerce site or fashion lookbook
+
+MANDATORY:
+- A REAL human model must be wearing the garment
+- Clean white seamless studio backdrop
+- Must look like a REAL PHOTOGRAPH taken with a professional camera
+- The design on the garment must be simple and minimal
+
+DO NOT:
+- Show the garment alone without a model (no flat-lays, no ghost mannequins)
+- Use perfect symmetry or mathematically precise graphics
+- Add glossy, metallic, holographic, or plastic-looking textures
+- Include neon lighting, colored gels, or dramatic studio effects
+- Create anything that looks like digital concept art, 3D render, or AI-generated imagery
+- Use busy backgrounds, props, or environmental settings`;
 
       const messageContent: Array<{ type: string; text?: string; image_url?: { url: string } }> = [
         { type: 'text', text: enhancedPrompt }
