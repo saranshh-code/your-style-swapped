@@ -68,7 +68,7 @@ serve(async (req) => {
     console.log(`Generating ${numVariations} design variations via Lovable AI`);
 
     const generateDesign = async (styleVariation: { style: string; emphasis: string }, index: number) => {
-      const enhancedPrompt = `Photograph a real ${isCustomColor ? '' : `${colorContext} `}${productContext}${isCustomFabric ? '' : ` made from ${fabricDesc}`} laid flat on a clean surface or worn casually by a person.
+      const enhancedPrompt = `Professional fashion editorial photograph of a real model wearing a ${isCustomColor ? '' : `${colorContext} `}${productContext}${isCustomFabric ? '' : ` made from ${fabricDesc}`} in a clean white photography studio.
 
 STYLE DIRECTION: ${styleVariation.style} — ${styleVariation.emphasis}
 DESIGN CONCEPT: ${prompt}
@@ -76,17 +76,24 @@ PRINT PLACEMENT: ${printSideContext}
 
 ${isCustomProduct || isCustomColor || isCustomFabric ? 'NOTE: Some options left open — interpret the prompt naturally.' : ''}
 
-IMPORTANT RULES:
-- Must look like a REAL PHOTOGRAPH of a real garment, not a digital render or concept art
-- Show realistic fabric texture: natural wrinkles, soft folds, visible weave or knit
-- Use soft natural daylight lighting only — NO neon, NO dramatic studio lighting, NO glossy reflections
+MANDATORY REQUIREMENTS:
+- A REAL human model must be wearing the garment, standing naturally in a WHITE STUDIO BACKGROUND
+- The model should have a relaxed, confident pose — NOT stiff or overly posed
+- Full body or 3/4 body shot showing the garment clearly
+- Clean white seamless backdrop with soft studio lighting and natural shadows on the floor
+- Must look like a REAL PHOTOGRAPH, not a digital render or concept art
+- Realistic fabric texture: natural drape, soft folds, visible weave or knit on the garment
+- Soft diffused studio lighting — NO harsh shadows, NO neon, NO dramatic colored lighting
 - The design/print on the garment should be simple, intentional, and minimal — like something from Zara, Uniqlo, or H&M
-- Avoid perfect symmetry, excessive detail, or fantasy elements
-- Garment proportions must be realistic and wearable
-- Background should be simple: white/cream surface, wooden table, or neutral bedroom setting
-- If showing on a person, use natural casual posing — NOT a fashion runway pose
-- The overall mood should feel approachable, everyday, and commercially viable
-- NO metallic textures, NO holographic effects, NO hyper-detailed illustrations on the garment`;
+- Garment must fit naturally on the model with realistic proportions
+- The overall mood should feel like a real e-commerce product photo or lookbook shot
+
+AVOID:
+- Flat-lay or garment-only shots (must show on a model)
+- Perfect symmetry or excessive detail on the garment design
+- Metallic textures, holographic effects, or hyper-detailed illustrations
+- Fantasy elements, glossy reflections, or unrealistic proportions
+- Busy or colored backgrounds — ONLY clean white studio`;
 
       const messageContent: Array<{ type: string; text?: string; image_url?: { url: string } }> = [
         { type: 'text', text: enhancedPrompt }
